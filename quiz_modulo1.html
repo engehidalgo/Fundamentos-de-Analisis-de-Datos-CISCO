@@ -1,0 +1,301 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Quiz – Módulo 1 | Fundamentos de Análisis de Datos | Cisco</title>
+  <style>
+    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+    :root {
+      --cisco-blue: #0060AD;
+      --cisco-blue-dark: #004f91;
+      --cisco-blue-light: #E6F1FB;
+      --green-bg: #EAF3DE; --green-border: #639922; --green-text: #27500A;
+      --red-bg: #FCEBEB; --red-border: #A32D2D; --red-text: #791F1F;
+      --gray-border: #D8D8D8; --gray-bg: #F5F5F5; --gray-text: #6B6B6B;
+      --text: #1A1A1A; --text-secondary: #555;
+      --radius: 8px; --radius-lg: 12px;
+      --font: 'Segoe UI', system-ui, -apple-system, sans-serif;
+    }
+    body { font-family: var(--font); background: #F0F4F8; min-height: 100vh; display: flex; align-items: flex-start; justify-content: center; padding: 2rem 1rem; }
+    .card { background: #fff; border-radius: 16px; box-shadow: 0 4px 24px rgba(0,0,0,.09); width: 100%; max-width: 700px; overflow: hidden; }
+
+    /* HEADER */
+    .header { display: flex; align-items: center; gap: 16px; padding: 1.25rem 1.75rem; border-bottom: 1px solid #E8E8E8; background: #fff; }
+    .cisco-logo { display: flex; flex-direction: column; align-items: center; gap: 5px; }
+    .cisco-bars { display: flex; align-items: flex-end; gap: 3.5px; }
+    .cisco-bar { background: var(--cisco-blue); border-radius: 1.5px; width: 6px; }
+    .cisco-wordmark { font-size: 17px; font-weight: 700; letter-spacing: 2px; color: var(--cisco-blue); }
+    .header-divider { width: 1px; height: 42px; background: #E0E0E0; margin: 0 4px; }
+    .header-text { }
+    .header-course { font-size: 11px; font-weight: 600; letter-spacing: .5px; color: var(--cisco-blue); text-transform: uppercase; margin-bottom: 3px; }
+    .header-module { font-size: 14px; font-weight: 500; color: var(--text); }
+
+    /* PROGRESS */
+    .prog-wrap { padding: .9rem 1.75rem; border-bottom: 1px solid #F0F0F0; }
+    .prog-bg { height: 4px; background: #E8E8E8; border-radius: 99px; overflow: hidden; }
+    .prog-fill { height: 100%; background: var(--cisco-blue); border-radius: 99px; transition: width .4s ease; }
+    .prog-labels { display: flex; justify-content: space-between; font-size: 12px; color: var(--gray-text); margin-top: 6px; }
+    .prog-labels .score { color: var(--cisco-blue); font-weight: 600; }
+
+    /* QUESTION BODY */
+    .q-body { padding: 1.5rem 1.75rem; }
+    .section-pill { display: inline-block; font-size: 10px; font-weight: 600; letter-spacing: .6px; text-transform: uppercase; color: var(--cisco-blue); background: var(--cisco-blue-light); padding: 3px 10px; border-radius: 99px; margin-bottom: .85rem; }
+    .q-text { font-size: 16px; font-weight: 500; color: var(--text); line-height: 1.6; margin-bottom: 1.25rem; }
+    .opts { display: flex; flex-direction: column; gap: 8px; }
+    .opt { background: #fff; border: 1.5px solid #E0E0E0; border-radius: var(--radius); padding: 12px 16px; font-size: 14px; color: var(--text); cursor: pointer; text-align: left; line-height: 1.5; transition: border-color .15s, background .15s; display: flex; align-items: flex-start; gap: 12px; width: 100%; font-family: var(--font); }
+    .opt-badge { min-width: 24px; height: 24px; border-radius: 50%; border: 1.5px solid #D0D0D0; display: flex; align-items: center; justify-content: center; font-size: 11px; font-weight: 600; color: #888; flex-shrink: 0; margin-top: 1px; transition: all .15s; }
+    .opt:hover:not(:disabled) { border-color: var(--cisco-blue); background: var(--cisco-blue-light); }
+    .opt:hover:not(:disabled) .opt-badge { border-color: var(--cisco-blue); color: var(--cisco-blue); }
+    .opt.correct { background: var(--green-bg); border-color: var(--green-border); }
+    .opt.correct .opt-badge { background: var(--green-border); border-color: var(--green-border); color: #fff; }
+    .opt.wrong { background: var(--red-bg); border-color: var(--red-border); }
+    .opt.wrong .opt-badge { background: var(--red-border); border-color: var(--red-border); color: #fff; }
+    .opt.reveal { background: var(--green-bg); border-color: var(--green-border); }
+    .opt.reveal .opt-badge { background: var(--green-border); border-color: var(--green-border); color: #fff; }
+    .opt:disabled { cursor: default; }
+    .feedback { margin-top: 1rem; font-size: 13.5px; padding: 11px 15px; border-radius: var(--radius); line-height: 1.6; display: none; }
+    .feedback.show { display: block; }
+    .fb-ok { background: var(--green-bg); color: var(--green-text); border: 1px solid #97C459; }
+    .fb-err { background: var(--red-bg); color: var(--red-text); border: 1px solid #F09595; }
+    .nav { display: flex; justify-content: flex-end; margin-top: 1.25rem; }
+    .btn-next { background: var(--cisco-blue); border: none; border-radius: var(--radius); padding: 10px 24px; font-size: 14px; cursor: pointer; color: #fff; font-weight: 600; display: none; font-family: var(--font); transition: background .15s; }
+    .btn-next:hover { background: var(--cisco-blue-dark); }
+
+    /* RESULT */
+    .result { display: none; padding: 2.5rem 1.75rem; text-align: center; }
+    .result-logo { display: flex; flex-direction: column; align-items: center; gap: 5px; margin-bottom: 1.75rem; }
+    .result-score { font-size: 60px; font-weight: 300; color: var(--cisco-blue); line-height: 1; }
+    .result-denom { font-size: 17px; color: var(--gray-text); margin-bottom: .3rem; }
+    .result-pct { font-size: 13px; color: var(--gray-text); margin-bottom: 1.5rem; }
+    .chips { display: flex; gap: 10px; justify-content: center; flex-wrap: wrap; margin-bottom: 1.5rem; }
+    .chip { font-size: 13px; padding: 6px 16px; border-radius: 99px; font-weight: 500; }
+    .chip-g { background: var(--green-bg); color: var(--green-text); }
+    .chip-r { background: var(--red-bg); color: var(--red-text); }
+    .chip-b { background: var(--cisco-blue-light); color: var(--cisco-blue); }
+    .breakdown { text-align: left; max-width: 460px; margin: 0 auto 1.75rem; border: 1px solid #E8E8E8; border-radius: var(--radius-lg); overflow: hidden; }
+    .bd-title { font-size: 11px; font-weight: 600; text-transform: uppercase; letter-spacing: .5px; color: var(--gray-text); padding: 10px 16px; border-bottom: 1px solid #E8E8E8; background: var(--gray-bg); }
+    .bd-row { display: flex; justify-content: space-between; align-items: center; padding: 9px 16px; border-bottom: 1px solid #F0F0F0; }
+    .bd-row:last-child { border-bottom: none; }
+    .bd-name { font-size: 13px; color: var(--text); }
+    .bd-mini { display: flex; align-items: center; gap: 8px; }
+    .mini-bg { width: 70px; height: 3px; background: #E8E8E8; border-radius: 99px; overflow: hidden; }
+    .mini-fill { height: 100%; background: var(--cisco-blue); border-radius: 99px; }
+    .bd-score { font-size: 13px; font-weight: 600; color: var(--cisco-blue); min-width: 36px; text-align: right; }
+    .result-msg { font-size: 14px; color: var(--gray-text); line-height: 1.7; max-width: 460px; margin: 0 auto 1.75rem; }
+    .btn-restart { background: var(--cisco-blue); border: none; border-radius: var(--radius); padding: 12px 32px; font-size: 15px; cursor: pointer; color: #fff; font-weight: 600; font-family: var(--font); transition: background .15s; }
+    .btn-restart:hover { background: var(--cisco-blue-dark); }
+
+    .footer { text-align: center; padding: .75rem; font-size: 11px; color: #B0B0B0; border-top: 1px solid #F0F0F0; }
+  </style>
+</head>
+<body>
+<div class="card">
+  <div class="header">
+    <div class="cisco-logo">
+      <div class="cisco-bars" id="logo-bars"></div>
+      <div class="cisco-wordmark">CISCO</div>
+    </div>
+    <div class="header-divider"></div>
+    <div class="header-text">
+      <div class="header-course">Fundamentos de Análisis de Datos</div>
+      <div class="header-module">Módulo 1 — Proyectos de Análisis de Datos</div>
+    </div>
+  </div>
+
+  <div class="prog-wrap">
+    <div class="prog-bg"><div class="prog-fill" id="pbar" style="width:0%"></div></div>
+    <div class="prog-labels">
+      <span id="q-counter">Pregunta 1 de 35</span>
+      <span class="score" id="score-live">0 correctas</span>
+    </div>
+  </div>
+
+  <div class="q-body" id="q-body">
+    <div class="section-pill" id="section-pill"></div>
+    <div class="q-text" id="q-text"></div>
+    <div class="opts" id="opts"></div>
+    <div class="feedback" id="feedback"></div>
+    <div class="nav"><button class="btn-next" id="btn-next" onclick="next()">Siguiente →</button></div>
+  </div>
+
+  <div class="result" id="result">
+    <div class="result-logo">
+      <div class="cisco-bars" id="logo-bars-2"></div>
+      <div class="cisco-wordmark">CISCO</div>
+    </div>
+    <div class="result-score" id="r-num"></div>
+    <div class="result-denom" id="r-denom"></div>
+    <div class="result-pct" id="r-pct"></div>
+    <div class="chips">
+      <span class="chip chip-g" id="r-ok"></span>
+      <span class="chip chip-r" id="r-err"></span>
+      <span class="chip chip-b" id="r-pct-chip"></span>
+    </div>
+    <div class="breakdown" id="breakdown"></div>
+    <div class="result-msg" id="r-msg"></div>
+    <button class="btn-restart" onclick="restart()">Intentar de nuevo ↺</button>
+  </div>
+
+  <div class="footer">Fundamentos de Análisis de Datos · Cisco · Módulo 1</div>
+</div>
+
+<script>
+const BAR_H = [18,28,38,48,38,48,38,28,18];
+function drawBars(id) {
+  const el = document.getElementById(id);
+  if (!el) return;
+  el.innerHTML = '';
+  BAR_H.forEach(h => {
+    const b = document.createElement('div');
+    b.className = 'cisco-bar';
+    b.style.height = h + 'px';
+    el.appendChild(b);
+  });
+}
+drawBars('logo-bars');
+
+const L = ['A','B','C','D'];
+
+const questions = [
+  { section:"1.1 · Introducción al Análisis", q:"¿En qué año ocurrió el famoso caso de los Oakland A's que ilustra el valor del análisis de datos?", opts:["1998","2002","2008","2015"], correct:1, feedback:"En 2002, el gerente general de los Oakland A's usó análisis de datos de temporadas anteriores para elegir jugadores infravalorados y llevar al equipo a un campeonato." },
+  { section:"1.1 · Introducción al Análisis", q:"Según el video introductorio, ¿qué otro evento reciente ejemplifica cómo el análisis de datos es crucial para nuestra existencia?", opts:["La crisis financiera de 2008","El seguimiento de las variantes de la pandemia de coronavirus","La llegada del hombre a Marte","El desarrollo de autos autónomos"], correct:1, feedback:"El video menciona el seguimiento de la propagación de variantes de la pandemia del coronavirus como un ejemplo reciente de cómo el análisis de datos se ha vuelto crucial." },
+  { section:"1.1 · Introducción al Análisis", q:"¿Qué organización señaló que 'la revolución de los datos crea infinitas oportunidades para afrontar los grandes desafíos del siglo 21'?", opts:["La ONU","El MIT","El Foro Económico Mundial","Google DeepMind"], correct:2, feedback:"El Foro Económico Mundial identificó la ciencia de datos como un problema global que afecta cada faceta de nuestras vidas y realizó esa declaración." },
+  { section:"1.1 · Introducción al Análisis", q:"¿Cuántos terabytes de datos genera por vuelo un motor a reacción de avión, según el video?", opts:["100 gigabytes","1 terabyte","10 terabytes","1 petabyte"], correct:1, feedback:"El video menciona que un motor a reacción genera un terabyte de datos por vuelo, ejemplificando el volumen masivo de datos del IoT." },
+  { section:"1.1 · Introducción al Análisis", q:"¿Qué significa IoT según el contenido del módulo?", opts:["Intelligence of Technology","Internet of Things (Internet de las Cosas)","Integration of Tools","Index of Transactions"], correct:1, feedback:"IoT significa Internet of Things (Internet de las Cosas) y se refiere a objetos físicos que capturan y transmiten datos." },
+  { section:"1.1 · Introducción al Análisis", q:"¿Con qué se compara a los datos en bruto en el video, indicando que son valiosos pero necesitan transformación?", opts:["Agua sin filtrar","Petróleo crudo","Mineral de hierro","Madera sin procesar"], correct:1, feedback:"El video compara los datos con el petróleo crudo: deben transformarse para crear valor real, igual que el petróleo debe refinarse." },
+  { section:"1.1 · Introducción al Análisis", q:"¿Hacia qué otras áreas pueden avanzar los analistas de datos según el video introductorio?", opts:["Marketing digital y diseño gráfico","Inteligencia artificial, aprendizaje automático, automatización y robótica","Contabilidad y auditoría financiera","Desarrollo de videojuegos y realidad virtual"], correct:1, feedback:"Según el video, los analistas de datos pueden avanzar hacia IA, aprendizaje automático, automatización y robótica sofisticada." },
+  { section:"1.1.2 · La Revolución del Análisis", q:"¿Cómo se denomina el tipo de análisis que usa datos estáticos e históricos para describir eventos pasados?", opts:["Análisis predictivo","Análisis prescriptivo","Análisis descriptivo","Análisis de diagnóstico"], correct:2, feedback:"El análisis descriptivo trabaja con datos estáticos como transacciones, niveles de inventario o informes de defectos, y se analiza mensual o trimestralmente." },
+  { section:"1.1.2 · La Revolución del Análisis", q:"¿Cuál es la frecuencia típica con la que se analiza la mayor parte de los datos en el análisis descriptivo tradicional?", opts:["Diariamente","Semanalmente","Mensual o trimestralmente","En tiempo real"], correct:2, feedback:"La mayor parte de los datos en el análisis descriptivo tradicional se compila y analiza con frecuencia mensual o trimestral." },
+  { section:"1.1.2 · La Revolución del Análisis", q:"¿Por qué los resultados del análisis descriptivo tradicional son muy precisos?", opts:["Porque usan inteligencia artificial avanzada","Porque los datos generalmente no cambian durante el análisis","Porque siempre provienen de fuentes oficiales del gobierno","Porque son verificados por expertos humanos"], correct:1, feedback:"Los resultados son muy precisos porque los datos son estáticos y generalmente no cambian durante el análisis." },
+  { section:"1.1.2 · La Revolución del Análisis", q:"¿Cuál de estos es un ejemplo de información obtenida a través del análisis descriptivo tradicional?", opts:["Predicción de ventas para el próximo trimestre","Recomendación de la mejor ruta de distribución","Rendimiento anterior de los productos y rentabilidad","Detección en tiempo real de transacciones fraudulentas"], correct:2, feedback:"El texto menciona como ejemplos descriptivos: rendimiento anterior de productos, rentabilidad, tiempos de inventario y éxito publicitario." },
+  { section:"1.1.2 · La Revolución del Análisis", q:"¿Cuál de los siguientes NO es un ejemplo de análisis de próxima generación mencionado en el texto?", opts:["Un banco que analiza cada transacción en tiempo real para detectar fraudes","Un fabricante que monitorea informes de defectos constantemente","Un minorista que responde instantáneamente a reseñas de clientes","Una empresa que publica un informe anual de satisfacción del cliente"], correct:3, feedback:"El informe anual de satisfacción es análisis descriptivo tradicional. Los otros tres son ejemplos de próxima generación con datos en tiempo real." },
+  { section:"1.1.2 · La Revolución del Análisis", q:"¿Qué permite el análisis de próxima generación que el análisis tradicional no podía hacer?", opts:["Crear reportes con gráficos más atractivos","Reaccionar rápidamente a condiciones actuales y hacer predicciones confiables de comportamientos futuros","Almacenar más datos históricos en servidores","Reducir el número de analistas necesarios"], correct:1, feedback:"El análisis de próxima generación usa datos en tiempo real para lograr un cambio rápido y transformador, reaccionando y prediciendo — algo imposible con el análisis descriptivo tradicional." },
+  { section:"1.1.4 · Tipos de Análisis", q:"¿Qué pregunta responde el análisis predictivo?", opts:["¿Qué sucedió?","¿Por qué sucedió esto?","¿Qué podría suceder en el futuro?","¿Qué se debe hacer a continuación?"], correct:2, feedback:"El análisis predictivo responde '¿Qué podría suceder en el futuro?' usando datos históricos y actuales para hacer predicciones basadas en probabilidades." },
+  { section:"1.1.4 · Tipos de Análisis", q:"¿Qué pregunta responde el análisis prescriptivo?", opts:["¿Qué sucedió?","¿Por qué sucedió esto?","¿Qué podría suceder en el futuro?","¿Qué se debe hacer a continuación?"], correct:3, feedback:"El análisis prescriptivo responde '¿Qué se debe hacer a continuación?' recomendando cursos de acción que cosecharán el mayor beneficio." },
+  { section:"1.1.4 · Tipos de Análisis", q:"¿Qué pregunta responde el análisis de diagnóstico?", opts:["¿Qué sucedió?","¿Por qué sucedió esto?","¿Qué podría suceder en el futuro?","¿Qué se debe hacer a continuación?"], correct:1, feedback:"El análisis de diagnóstico responde '¿Por qué sucedió esto?' profundizando para descubrir las causas de los eventos o anomalías." },
+  { section:"1.1.4 · Tipos de Análisis", q:"¿Cuál es el primer paso en el proceso de análisis descriptivo?", opts:["Recopilar y preparar datos","Analizar los datos con herramientas estadísticas","Hacer una pregunta histórica que necesite respuesta","Presentar los resultados a los tomadores de decisiones"], correct:2, feedback:"El primer paso es hacer una pregunta histórica que necesite respuesta, como '¿Cuánto del producto X vendimos el año pasado?'" },
+  { section:"1.1.4 · Tipos de Análisis", q:"¿Cuál de estos es un ejemplo de análisis descriptivo?", opts:["Predecir cuántas unidades se venderán el próximo mes","Recomendar la mejor campaña de marketing","Resumir el historial de ventas e inventario del año anterior","Detectar por qué bajaron las ventas en un trimestre específico"], correct:2, feedback:"Resumir eventos históricos como ventas e inventario es un ejemplo clásico de análisis descriptivo." },
+  { section:"1.1.4 · Tipos de Análisis", q:"¿Cuál es el ejemplo de análisis prescriptivo mencionado explícitamente en el texto?", opts:["Un sistema bancario antifraude","Una app de mapas GPS que sugiere la ruta más rápida","Un sistema que predice cancelaciones de suscripciones","Un informe trimestral de ventas"], correct:1, feedback:"El texto menciona las apps de mapas GPS como ejemplo de análisis prescriptivo: prescriben la mejor ruta según los objetivos del usuario." },
+  { section:"1.1.4 · Tipos de Análisis", q:"¿Cuál es el primer paso en el proceso de análisis de diagnóstico?", opts:["Presentar posibles causas","Utilizar técnicas estadísticas para descubrir relaciones","Identificar anomalías o inconsistencias en los conjuntos de datos","Recopilar datos relacionados con las anomalías"], correct:2, feedback:"El proceso de diagnóstico comienza identificando anomalías en los conjuntos de datos, luego recopila datos relacionados, aplica técnicas estadísticas y presenta causas." },
+  { section:"1.1.4 · Tipos de Análisis", q:"Un banco analiza el historial de gastos para anticipar quiénes solicitarán un crédito el próximo mes. ¿Qué tipo de análisis es?", opts:["Descriptivo","Predictivo","Prescriptivo","De diagnóstico"], correct:1, feedback:"Es análisis predictivo: usa datos históricos para predecir comportamientos futuros mediante modelos de simulación y pronósticos." },
+  { section:"1.1.4 · Tipos de Análisis", q:"Una empresa nota un aumento en devoluciones y cruza esos datos con turnos de producción para encontrar la causa. ¿Qué tipo de análisis aplica?", opts:["Descriptivo","Predictivo","Prescriptivo","De diagnóstico"], correct:3, feedback:"Es análisis de diagnóstico: identifica una anomalía (aumento de devoluciones) y usa datos relacionados para descubrir la causa raíz." },
+  { section:"1.1.4 · Tipos de Análisis", q:"¿Qué tipo de análisis se basa en los resultados descriptivo y predictivo para recomendar la mejor acción?", opts:["Descriptivo","Predictivo","Prescriptivo","De diagnóstico"], correct:2, feedback:"El análisis prescriptivo se basa en el descriptivo y predictivo para recomendar cursos de acción óptimos. Es el tipo más avanzado." },
+  { section:"1.2 · El Proceso Analítico", q:"¿Cuántos pasos tiene el Ciclo de Vida del Análisis de Datos utilizado en este curso?", opts:["4","5","6","8"], correct:2, feedback:"El curso utiliza el Ciclo de Vida de seis pasos: Hacer la pregunta, Obtener datos, Investigar datos, Preparar datos, Analizar datos y Presentar resultados." },
+  { section:"1.2 · El Proceso Analítico", q:"¿Qué ocurre en la fase 'Investigar los datos'?", opts:["Se transforman los datos a un formato adecuado","Se determina si los datos están completos y contienen información relevante","Se identifican patrones y correlaciones","Se localizan y obtienen los datos relevantes"], correct:1, feedback:"En 'Investigar los datos' se determina si los datos están completos y contienen la información relevante para el análisis." },
+  { section:"1.2 · El Proceso Analítico", q:"¿Qué herramientas se mencionan como comúnmente usadas en la fase de 'Analizar los datos'?", opts:["Presentaciones PowerPoint y documentos Word","Hojas de cálculo y aplicaciones de visualización","Bases de datos SQL y servidores de almacenamiento","Redes sociales y encuestas en línea"], correct:1, feedback:"El análisis se basa en técnicas estadísticas y herramientas de software como hojas de cálculo y aplicaciones de visualización." },
+  { section:"1.2 · El Proceso Analítico", q:"Además de comunicar resultados, ¿qué más se le puede pedir al analista en 'Presentar los resultados'?", opts:["Recopilar más datos si los resultados no son suficientes","Recomendar acciones basadas en los resultados","Repetir el análisis con diferentes herramientas","Eliminar los datos usados por privacidad"], correct:1, feedback:"A veces también se le pide al analista que recomiende acciones basadas en los resultados del análisis." },
+  { section:"1.2 · El Proceso Analítico", q:"¿Por qué el Ciclo de Vida del Análisis de Datos se considera iterativo?", opts:["Porque siempre debe completarse en orden estricto","Porque algunos pasos pueden repetirse varias veces antes de avanzar con suficiente confianza","Porque cada analista puede elegir el orden que prefiera","Porque los datos cambian y obligan a reiniciar desde cero"], correct:1, feedback:"El ciclo es iterativo porque algunos pasos podrían repetirse varias veces antes de que los responsables tengan la confianza suficiente para avanzar." },
+  { section:"1.2 · El Proceso Analítico", q:"¿En cuál fase del ciclo analítico se define el objetivo del proyecto?", opts:["Obtener datos","Preparar datos","Hacer la pregunta","Presentar resultados"], correct:2, feedback:"En 'Hacer la Pregunta' se define el objetivo de cada proyecto, basado en requisitos comerciales externos o internos." },
+  { section:"1.2 · Comprensión del Negocio", q:"Un fabricante de bicicletas quiere enfocar su presupuesto de marketing. ¿Qué datos combinaría para el análisis?", opts:["Solo datos de redes sociales de la competencia","Registros de ventas, información demográfica de clientes y datos de productos","Únicamente los comentarios negativos de clientes en foros","Datos meteorológicos y tendencias de actividad física"], correct:1, feedback:"El texto describe que el fabricante combina registros de ventas, información demográfica de clientes y datos de productos para decidir dónde enfocar la publicidad." },
+  { section:"1.2 · Comprensión del Negocio", q:"¿Por qué una empresa de suministros médicos analiza datos demográficos junto con diagnósticos comunes?", opts:["Para reducir el número de médicos necesarios","Para identificar patrones y asegurarse de tener el inventario adecuado en el momento correcto","Para determinar el precio óptimo de sus productos","Para predecir la rentabilidad del próximo trimestre"], correct:1, feedback:"La empresa analiza demografía y diagnósticos para identificar patrones y asegurarse de tener los suministros correctos disponibles en el momento adecuado." },
+  { section:"1.3 · Portafolio de Proyectos", q:"¿Qué es un portafolio de proyectos en el contexto del análisis de datos?", opts:["Un conjunto de certificaciones oficiales de herramientas","Una colección de proyectos que demuestra la capacidad de completar un análisis de principio a fin","Un documento que lista los empleos anteriores del analista","Un repositorio privado con fórmulas y plantillas"], correct:1, feedback:"Un portafolio proporciona evidencia que demuestra la capacidad para completar un proyecto de principio a fin, es la forma principal de mostrar habilidades a empleadores." },
+  { section:"1.3 · Portafolio de Proyectos", q:"¿Cuáles lenguajes/herramientas se mencionan en el video del portafolio como ejemplos a destacar?", opts:["Java, C++ y Swift","R, Python, SQL y Excel","HTML, CSS y JavaScript","Tableau, Power BI y Looker"], correct:1, feedback:"El video menciona explícitamente R, Python, SQL y Excel como herramientas que los analistas deben resaltar en su portafolio." },
+  { section:"1.3 · Portafolio de Proyectos", q:"¿Qué criterio principal se debe usar al elegir proyectos para el portafolio?", opts:["Elegir los proyectos más cortos para mostrar eficiencia","Incluir áreas temáticas y problemas que le interesen personalmente al analista","Seleccionar solo proyectos con datos del mundo empresarial","Priorizar proyectos que usen las herramientas más sofisticadas"], correct:1, feedback:"Al elegir proyectos hay que incluir áreas temáticas y problemas de interés personal. Es mucho más fácil trabajar en algo que realmente importa." },
+  { section:"1.3 · GitHub", q:"¿Cuál es la ventaja específica de usar GitHub para compartir el portafolio?", opts:["Es la única plataforma gratuita disponible","Es una comunidad colaborativa y los empleadores suelen buscar allí el perfil antes de una entrevista","Ofrece herramientas de visualización similares a Tableau","Permite alojar archivos de datos de gran tamaño sin costo"], correct:1, feedback:"GitHub es una comunidad colaborativa con consejos y comentarios sobre el trabajo, y los empleadores buscan en GitHub el perfil antes de programar entrevistas." },
+  { section:"1.3 · GitHub", q:"¿Cuál es la función del archivo README en un repositorio de GitHub?", opts:["Almacenar el código fuente principal del proyecto","Funcionar como la página de inicio del repositorio con descripción general e información pertinente","Registrar el historial de cambios de cada archivo","Configurar los permisos de acceso al repositorio"], correct:1, feedback:"El archivo README funciona como la página de inicio del repositorio. Cada proyecto debe tener uno para brindar descripción general e información pertinente." }
+];
+
+let current = 0, score = 0, answered = false;
+const sectionScores = {};
+questions.forEach(q => {
+  if (!sectionScores[q.section]) sectionScores[q.section] = { correct: 0, total: 0 };
+  sectionScores[q.section].total++;
+});
+
+function render() {
+  const q = questions[current];
+  document.getElementById('section-pill').textContent = q.section;
+  document.getElementById('q-text').textContent = q.q;
+  document.getElementById('q-counter').textContent = `Pregunta ${current + 1} de ${questions.length}`;
+  document.getElementById('score-live').textContent = `${score} correcta${score !== 1 ? 's' : ''}`;
+  document.getElementById('pbar').style.width = `${(current / questions.length) * 100}%`;
+  const optsEl = document.getElementById('opts');
+  optsEl.innerHTML = '';
+  q.opts.forEach((text, i) => {
+    const btn = document.createElement('button');
+    btn.className = 'opt';
+    btn.innerHTML = `<span class="opt-badge">${L[i]}</span><span>${text}</span>`;
+    btn.onclick = () => select(i);
+    optsEl.appendChild(btn);
+  });
+  const fb = document.getElementById('feedback');
+  fb.className = 'feedback';
+  fb.textContent = '';
+  document.getElementById('btn-next').style.display = 'none';
+  answered = false;
+}
+
+function select(idx) {
+  if (answered) return;
+  answered = true;
+  const q = questions[current];
+  const btns = document.querySelectorAll('.opt');
+  btns.forEach(b => b.disabled = true);
+  const fb = document.getElementById('feedback');
+  if (idx === q.correct) {
+    btns[idx].classList.add('correct');
+    fb.className = 'feedback fb-ok show';
+    fb.textContent = '✓ Correcto — ' + q.feedback;
+    score++;
+    sectionScores[q.section].correct++;
+  } else {
+    btns[idx].classList.add('wrong');
+    btns[q.correct].classList.add('reveal');
+    fb.className = 'feedback fb-err show';
+    fb.textContent = '✗ Incorrecto — ' + q.feedback;
+  }
+  document.getElementById('score-live').textContent = `${score} correcta${score !== 1 ? 's' : ''}`;
+  const nxt = document.getElementById('btn-next');
+  nxt.style.display = 'block';
+  nxt.textContent = current < questions.length - 1 ? 'Siguiente →' : 'Ver resultados →';
+}
+
+function next() {
+  current++;
+  if (current >= questions.length) { showResult(); return; }
+  render();
+}
+
+function showResult() {
+  document.getElementById('q-body').style.display = 'none';
+  document.getElementById('prog-wrap') && (document.querySelector('.prog-wrap').style.display = 'none');
+  const total = questions.length;
+  const pct = Math.round((score / total) * 100);
+  document.getElementById('r-num').textContent = score;
+  document.getElementById('r-denom').textContent = `de ${total} preguntas`;
+  document.getElementById('r-pct').textContent = `${pct}% de respuestas correctas`;
+  document.getElementById('r-ok').textContent = `${score} correctas`;
+  document.getElementById('r-err').textContent = `${total - score} incorrectas`;
+  document.getElementById('r-pct-chip').textContent = `${pct}%`;
+  const bd = document.getElementById('breakdown');
+  let html = `<div class="bd-title">Resultados por sección</div>`;
+  Object.entries(sectionScores).forEach(([sec, data]) => {
+    const spct = Math.round((data.correct / data.total) * 100);
+    html += `<div class="bd-row"><div class="bd-name">${sec}</div><div class="bd-mini"><div class="mini-bg"><div class="mini-fill" style="width:${spct}%"></div></div><span class="bd-score">${data.correct}/${data.total}</span></div></div>`;
+  });
+  bd.innerHTML = html;
+  let msg = '';
+  if (pct === 100) msg = '¡Resultado perfecto! Dominás completamente todos los contenidos del Módulo 1.';
+  else if (pct >= 85) msg = '¡Excelente! Tenés una comprensión muy sólida del módulo. Revisá las secciones donde fallaste según el detalle de arriba.';
+  else if (pct >= 70) msg = 'Buen trabajo. Revisá especialmente los tipos de análisis y las fases del ciclo de vida analítico.';
+  else if (pct >= 50) msg = 'Vas por buen camino. Repasá el material prestando atención a los cuatro tipos de análisis.';
+  else msg = 'Tomáte un tiempo para releer el material del Módulo 1 antes de continuar.';
+  document.getElementById('r-msg').textContent = msg;
+  document.getElementById('result').style.display = 'block';
+  drawBars('logo-bars-2');
+}
+
+function restart() {
+  current = 0; score = 0; answered = false;
+  Object.keys(sectionScores).forEach(k => { sectionScores[k].correct = 0; });
+  document.getElementById('result').style.display = 'none';
+  document.getElementById('q-body').style.display = 'block';
+  document.querySelector('.prog-wrap').style.display = 'block';
+  render();
+}
+
+render();
+</script>
+</body>
+</html>
