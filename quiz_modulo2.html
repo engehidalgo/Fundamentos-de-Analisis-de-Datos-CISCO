@@ -1,0 +1,459 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Quiz – Módulo 2 | Fundamentos de Análisis de Datos | Cisco</title>
+  <style>
+    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+    :root {
+      --cb: #0060AD; --cbd: #004f91; --cbl: #E6F1FB;
+      --gb: #EAF3DE; --gbo: #639922; --gt: #27500A;
+      --rb: #FCEBEB; --rbo: #A32D2D; --rt: #791F1F;
+      --gy: #F5F5F5; --gyt: #666; --tx: #1A1A1A;
+      --r: 8px; --rl: 12px;
+      --f: 'Segoe UI', system-ui, sans-serif;
+    }
+    body { font-family: var(--f); background: #F0F4F8; min-height: 100vh; display: flex; align-items: flex-start; justify-content: center; padding: 2rem 1rem; }
+    .card { background: #fff; border-radius: 16px; box-shadow: 0 4px 24px rgba(0,0,0,.09); width: 100%; max-width: 700px; overflow: hidden; }
+    .hdr { display: flex; align-items: center; gap: 16px; padding: 1.25rem 1.75rem; border-bottom: 1px solid #E8E8E8; }
+    .cisco-logo { display: flex; flex-direction: column; align-items: center; gap: 5px; }
+    .cisco-bars { display: flex; align-items: flex-end; gap: 3.5px; }
+    .cisco-bar { background: var(--cb); border-radius: 1.5px; width: 6px; }
+    .cisco-wm { font-size: 17px; font-weight: 700; letter-spacing: 2px; color: var(--cb); }
+    .hdiv { width: 1px; height: 42px; background: #E0E0E0; margin: 0 4px; }
+    .hcourse { font-size: 11px; font-weight: 600; letter-spacing: .5px; color: var(--cb); text-transform: uppercase; margin-bottom: 3px; }
+    .hmod { font-size: 14px; font-weight: 500; color: var(--tx); }
+    .pw { padding: .9rem 1.75rem; border-bottom: 1px solid #F0F0F0; }
+    .pbg { height: 4px; background: #E8E8E8; border-radius: 99px; overflow: hidden; }
+    .pf { height: 100%; background: var(--cb); border-radius: 99px; transition: width .4s; }
+    .pl { display: flex; justify-content: space-between; font-size: 12px; color: var(--gyt); margin-top: 6px; }
+    .sc { color: var(--cb); font-weight: 600; }
+    .qb { padding: 1.5rem 1.75rem; }
+    .pill { display: inline-block; font-size: 10px; font-weight: 600; letter-spacing: .6px; text-transform: uppercase; color: var(--cb); background: var(--cbl); padding: 3px 10px; border-radius: 99px; margin-bottom: .85rem; }
+    .qt { font-size: 16px; font-weight: 500; color: var(--tx); line-height: 1.6; margin-bottom: 1.25rem; }
+    .opts { display: flex; flex-direction: column; gap: 8px; }
+    .opt { background: #fff; border: 1.5px solid #E0E0E0; border-radius: var(--r); padding: 12px 16px; font-size: 14px; color: var(--tx); cursor: pointer; text-align: left; line-height: 1.5; transition: border-color .15s, background .15s; display: flex; align-items: flex-start; gap: 12px; width: 100%; font-family: var(--f); }
+    .ob { min-width: 24px; height: 24px; border-radius: 50%; border: 1.5px solid #D0D0D0; display: flex; align-items: center; justify-content: center; font-size: 11px; font-weight: 600; color: #888; flex-shrink: 0; margin-top: 1px; transition: all .15s; }
+    .opt:hover:not(:disabled) { border-color: var(--cb); background: var(--cbl); }
+    .opt:hover:not(:disabled) .ob { border-color: var(--cb); color: var(--cb); }
+    .opt.correct { background: var(--gb); border-color: var(--gbo); }
+    .opt.correct .ob { background: var(--gbo); border-color: var(--gbo); color: #fff; }
+    .opt.wrong { background: var(--rb); border-color: var(--rbo); }
+    .opt.wrong .ob { background: var(--rbo); border-color: var(--rbo); color: #fff; }
+    .opt.reveal { background: var(--gb); border-color: var(--gbo); }
+    .opt.reveal .ob { background: var(--gbo); border-color: var(--gbo); color: #fff; }
+    .opt:disabled { cursor: default; }
+    .fb { margin-top: 1rem; font-size: 13.5px; padding: 11px 15px; border-radius: var(--r); line-height: 1.6; display: none; }
+    .fb.show { display: block; }
+    .fbok { background: var(--gb); color: var(--gt); border: 1px solid #97C459; }
+    .fberr { background: var(--rb); color: var(--rt); border: 1px solid #F09595; }
+    .nav { display: flex; justify-content: flex-end; margin-top: 1.25rem; }
+    .btn { background: var(--cb); border: none; border-radius: var(--r); padding: 10px 24px; font-size: 14px; cursor: pointer; color: #fff; font-weight: 600; display: none; font-family: var(--f); transition: background .15s; }
+    .btn:hover { background: var(--cbd); }
+    .res { display: none; padding: 2.5rem 1.75rem; text-align: center; }
+    .rlogo { display: flex; flex-direction: column; align-items: center; gap: 5px; margin-bottom: 1.75rem; }
+    .rscore { font-size: 60px; font-weight: 300; color: var(--cb); line-height: 1; }
+    .rden { font-size: 17px; color: var(--gyt); margin-bottom: .3rem; }
+    .rpct { font-size: 13px; color: var(--gyt); margin-bottom: 1.5rem; }
+    .chips { display: flex; gap: 10px; justify-content: center; flex-wrap: wrap; margin-bottom: 1.5rem; }
+    .chip { font-size: 13px; padding: 6px 16px; border-radius: 99px; font-weight: 500; }
+    .cg { background: var(--gb); color: var(--gt); }
+    .cr { background: var(--rb); color: var(--rt); }
+    .cb2 { background: var(--cbl); color: var(--cb); }
+    .bdown { text-align: left; max-width: 460px; margin: 0 auto 1.75rem; border: 1px solid #E8E8E8; border-radius: var(--rl); overflow: hidden; }
+    .bdtit { font-size: 11px; font-weight: 600; text-transform: uppercase; letter-spacing: .5px; color: var(--gyt); padding: 10px 16px; border-bottom: 1px solid #E8E8E8; background: var(--gy); }
+    .bdrow { display: flex; justify-content: space-between; align-items: center; padding: 9px 16px; border-bottom: 1px solid #F0F0F0; }
+    .bdrow:last-child { border-bottom: none; }
+    .bdn { font-size: 13px; color: var(--tx); }
+    .bdm { display: flex; align-items: center; gap: 8px; }
+    .mbg { width: 70px; height: 3px; background: #E8E8E8; border-radius: 99px; overflow: hidden; }
+    .mf { height: 100%; background: var(--cb); border-radius: 99px; }
+    .bds { font-size: 13px; font-weight: 600; color: var(--cb); min-width: 36px; text-align: right; }
+    .rmsg { font-size: 14px; color: var(--gyt); line-height: 1.7; max-width: 460px; margin: 0 auto 1.75rem; }
+    .rbtn { background: var(--cb); border: none; border-radius: var(--r); padding: 12px 32px; font-size: 15px; cursor: pointer; color: #fff; font-weight: 600; font-family: var(--f); }
+    .rbtn:hover { background: var(--cbd); }
+    .footer { text-align: center; padding: .75rem; font-size: 11px; color: #B0B0B0; border-top: 1px solid #F0F0F0; }
+  </style>
+</head>
+<body>
+<div class="card">
+  <div class="hdr">
+    <div class="cisco-logo">
+      <div class="cisco-bars" id="logo-bars"></div>
+      <div class="cisco-wm">CISCO</div>
+    </div>
+    <div class="hdiv"></div>
+    <div>
+      <div class="hcourse">Fundamentos de Análisis de Datos</div>
+      <div class="hmod">Módulo 2 — Recopilación e Investigación de Datos</div>
+    </div>
+  </div>
+  <div class="pw">
+    <div class="pbg"><div class="pf" id="pbar" style="width:0%"></div></div>
+    <div class="pl"><span id="qcnt">Pregunta 1 de 30</span><span class="sc" id="slive">0 correctas</span></div>
+  </div>
+  <div class="qb" id="qb">
+    <div class="pill" id="spill"></div>
+    <div class="qt" id="qtext"></div>
+    <div class="opts" id="opts"></div>
+    <div class="fb" id="fb"></div>
+    <div class="nav"><button class="btn" id="btn" onclick="next()">Siguiente →</button></div>
+  </div>
+  <div class="res" id="res">
+    <div class="rlogo"><div class="cisco-bars" id="logo-bars-2"></div><div class="cisco-wm">CISCO</div></div>
+    <div class="rscore" id="rnum"></div>
+    <div class="rden" id="rden"></div>
+    <div class="rpct" id="rpct"></div>
+    <div class="chips">
+      <span class="chip cg" id="rok"></span>
+      <span class="chip cr" id="rerr"></span>
+      <span class="chip cb2" id="rpctc"></span>
+    </div>
+    <div class="bdown" id="bdown"></div>
+    <div class="rmsg" id="rmsg"></div>
+    <button class="rbtn" onclick="restart()">Intentar de nuevo ↺</button>
+  </div>
+  <div class="footer">Fundamentos de Análisis de Datos · Cisco · Módulo 2</div>
+</div>
+<script>
+const BAR_H = [18,28,38,48,38,48,38,28,18];
+function drawBars(id) {
+  const el = document.getElementById(id);
+  if (!el) return;
+  el.innerHTML = '';
+  BAR_H.forEach(function(h) {
+    const b = document.createElement('div');
+    b.className = 'cisco-bar';
+    b.style.height = h + 'px';
+    el.appendChild(b);
+  });
+}
+drawBars('logo-bars');
+
+const L = ['A','B','C','D'];
+
+const Q = [
+  {
+    s: '2.1 · Datos y Conjuntos de Datos',
+    q: '¿Cómo se denomina una recopilación de datos?',
+    o: ['Metadatos','Conjunto de datos','Archivo CSV','Base de datos'],
+    c: 1,
+    f: 'Una recopilación de datos se denomina conjunto de datos. Puede existir para uso privado de una organización o compartirse públicamente en Internet.'
+  },
+  {
+    s: '2.1 · Datos y Conjuntos de Datos',
+    q: '¿Qué son los metadatos en el contexto de un conjunto de datos?',
+    o: ['Los datos numéricos del conjunto','La información sobre el conjunto de datos: qué contiene y cómo está formateado','El archivo principal de análisis','Los datos históricos del conjunto'],
+    c: 1,
+    f: 'Los metadatos son información sobre el conjunto de datos, incluyendo descripción de lo que contiene y cómo está formateado. Son herramientas valiosas para que los analistas comprendan los datos.'
+  },
+  {
+    s: '2.1 · Datos y Conjuntos de Datos',
+    q: '¿Cuál es uno de los formatos más comunes para empaquetar e intercambiar datos?',
+    o: ['PDF','DOCX','CSV — valores separados por comas','ZIP'],
+    c: 2,
+    f: 'El formato CSV (valores separados por comas) es uno de los más comunes para empaquetar e intercambiar datos. Los conjuntos de datos públicos suelen estar compuestos por varios archivos CSV.'
+  },
+  {
+    s: '2.1 · Datos y Conjuntos de Datos',
+    q: '¿Cuál es un ejemplo de conjunto de datos privado?',
+    o: ['Repositorio de datos de la OMS','Conjunto de datos de películas en Kaggle','Datos de pacientes de un médico','Dataset de GitHub público'],
+    c: 2,
+    f: 'El conjunto de datos de pacientes de un médico es un ejemplo de dataset privado, ya que el acceso está limitado a quienes tienen permiso para usarlo.'
+  },
+  {
+    s: '2.1 · Datos y Conjuntos de Datos',
+    q: '¿Cuál herramienta se usa para importar y trabajar con archivos CSV en este módulo?',
+    o: ['Photoshop','PowerPoint','Excel','Word'],
+    c: 2,
+    f: 'Los archivos CSV se pueden importar a Excel para su posterior investigación y análisis. Excel es una de las herramientas más usadas para trabajar con datos tabulares.'
+  },
+  {
+    s: '2.1.3 · Herramientas de Análisis',
+    q: '¿Qué herramienta de análisis de datos es ideal para pequeños conjuntos de datos y análisis rápido?',
+    o: ['SQL','Tableau','Kaggle','Excel'],
+    c: 3,
+    f: 'Excel es la herramienta adecuada para pequeños conjuntos de datos y análisis rápido. Permite manipular datos, resumirlos con tablas dinámicas y crear visualizaciones.'
+  },
+  {
+    s: '2.1.3 · Herramientas de Análisis',
+    q: '¿Qué significa la sigla SQL?',
+    o: ['Simple Query Language','Structured Query Language — Lenguaje de Consulta Estructurado','Standard Query Logic','System Query Language'],
+    c: 1,
+    f: 'SQL significa Structured Query Language (Lenguaje de Consulta Estructurado). Es una potente herramienta de administración de bases de datos relacionales.'
+  },
+  {
+    s: '2.1.3 · Herramientas de Análisis',
+    q: '¿Cuál es la principal ventaja de SQL sobre Excel?',
+    o: ['Es más fácil de aprender','Tiene mejores gráficos','Es más rápido y puede manejar conjuntos de datos mucho más grandes','Funciona sin conexión a internet'],
+    c: 2,
+    f: 'SQL es más rápido y puede manejar conjuntos de datos mucho más grandes que Excel. Se utiliza para acceder, leer, manipular y analizar datos en bases de datos relacionales.'
+  },
+  {
+    s: '2.1.3 · Herramientas de Análisis',
+    q: '¿Para qué sirve principalmente Tableau?',
+    o: ['Para escribir consultas SQL','Para análisis y visualización — crear dashboards comprensibles para tomadores de decisiones no técnicos','Para almacenar grandes volúmenes de datos','Para hacer web scraping'],
+    c: 1,
+    f: 'Tableau es una de las herramientas de análisis y visualización de datos más utilizadas. Permite presentar datos en formatos que los responsables no técnicos pueden comprender fácilmente.'
+  },
+  {
+    s: '2.1.3 · Herramientas de Análisis',
+    q: '¿Qué es Kaggle?',
+    o: ['Un lenguaje de programación para análisis','Una herramienta de hojas de cálculo de Google','Una comunidad en línea para científicos de datos y entusiastas del aprendizaje automático','Un sistema de gestión de bases de datos relacionales'],
+    c: 2,
+    f: 'Kaggle es una comunidad en línea para científicos de datos y entusiastas del ML para compartir ideas, inspirarse y competir para resolver desafíos de ciencia de datos.'
+  },
+  {
+    s: '2.1.3 · Herramientas de Análisis',
+    q: '¿Cuántos usuarios de Excel hay en el mundo aproximadamente?',
+    o: ['500 millones','800 millones','1,2 mil millones','2 mil millones'],
+    c: 2,
+    f: 'Hay más de 1,2 mil millones de usuarios de Excel en todo el mundo. Fue desarrollado en 1985 originalmente como herramienta de contabilidad.'
+  },
+  {
+    s: '2.1.3 · Herramientas de Análisis',
+    q: '¿Cuántas funciones integradas tiene Excel aproximadamente?',
+    o: ['Más de 100','Más de 250','Más de 450','Más de 1000'],
+    c: 2,
+    f: 'Excel tiene más de 450 funciones integradas capaces de realizar agregaciones, manipulaciones de datos y visualizaciones, haciéndolo una herramienta ideal para analistas.'
+  },
+  {
+    s: '2.2 · Conceptos Básicos de Excel',
+    q: '¿Cuántas filas y columnas tiene una hoja de cálculo de Excel?',
+    o: ['1.000 filas y 100 columnas','1.048.576 filas y 16.384 columnas','500.000 filas y 10.000 columnas','Ilimitadas filas y columnas'],
+    c: 1,
+    f: 'Una hoja de cálculo de Excel tiene 1.048.576 filas y 16.384 columnas. Las filas se identifican con números y las columnas con letras.'
+  },
+  {
+    s: '2.2 · Conceptos Básicos de Excel',
+    q: '¿Cómo se identifica correctamente una celda en Excel?',
+    o: ['Solo por su número de fila','Solo por su letra de columna','Por la letra de columna seguida del número de fila — ej: A1, B2','Por el número de fila seguido de la letra de columna — ej: 1A, 2B'],
+    c: 2,
+    f: 'Una referencia de celda es siempre la letra de la columna seguida del número de fila, como A1 o B2. Las coordenadas de la celda activa se muestran en el Cuadro de Nombre de Celda.'
+  },
+  {
+    s: '2.2 · Conceptos Básicos de Excel',
+    q: '¿Qué sucede cuando se escribe A1:C5 en el Cuadro de Nombre de Celda?',
+    o: ['Se crea una nueva hoja de cálculo','Se selecciona el rango de celdas entre A1 y C5','Se elimina el contenido de esas celdas','Se formatea el rango como tabla'],
+    c: 1,
+    f: 'Al escribir A1:C5 en el Cuadro de Nombre de Celda, se selecciona el rango de celdas entre A1 y C5. El formato para rangos es siempre CeldaInicio:CeldaFin.'
+  },
+  {
+    s: '2.2 · Conceptos Básicos de Excel',
+    q: '¿Cuál es el atajo de teclado para poner texto en negrita en Excel?',
+    o: ['Ctrl + N','Ctrl + B','Ctrl + G','Alt + B'],
+    c: 1,
+    f: 'Ctrl + B se usa para poner en negrita. Ctrl + I es para cursiva y Ctrl + U para subrayado.'
+  },
+  {
+    s: '2.2 · Conceptos Básicos de Excel',
+    q: '¿Qué ocurre con los datos cuando se elimina una hoja de trabajo de Excel?',
+    o: ['Se mueven automáticamente a otra hoja','Se guardan en OneDrive','Los datos se pierden','Se archivan en el historial de versiones'],
+    c: 2,
+    f: 'Cuando se elimina una hoja de trabajo, los datos se pierden. No es posible recuperarla, a menos que el archivo tuviera guardada una versión anterior.'
+  },
+  {
+    s: '2.2 · Conceptos Básicos de Excel',
+    q: '¿Cuál es el atajo de teclado para agregar una nueva hoja de trabajo en Excel?',
+    o: ['Ctrl + N','Alt + F11','Shift + F11','Ctrl + T'],
+    c: 2,
+    f: 'El atajo Shift + F11 agrega una nueva hoja de trabajo. También se puede hacer clic en el botón + junto a las pestañas de hojas de trabajo.'
+  },
+  {
+    s: '2.2 · Conceptos Básicos de Excel',
+    q: '¿Qué carácter delimitador usa un archivo CSV para separar los datos en columnas?',
+    o: ['Punto y coma (;)','Dos puntos (:)','Coma (,)','Signo de dólar ($)'],
+    c: 2,
+    f: 'CSV significa valores separados por comas. La coma (,) es el delimitador estándar que separa los datos en columnas al importarlos a Excel.'
+  },
+  {
+    s: '2.2 · Conceptos Básicos de Excel',
+    q: '¿Cuál es la extensión predeterminada con la que Excel guarda los libros?',
+    o: ['.xls','.xlsx','.csv','.xlsm'],
+    c: 1,
+    f: 'Excel guarda los libros con la extensión .xlsx de manera predeterminada. Esta es la extensión estándar del formato moderno de Excel.'
+  },
+  {
+    s: '2.2 · Funciones de Excel',
+    q: 'En la fórmula =IF(AND(C4>50, C4<100), C4, ""), ¿qué función permite comparar más de una condición al mismo tiempo?',
+    o: ['IF','El signo igual =','AND','C4>50, C4<100'],
+    c: 2,
+    f: 'AND es una función lógica de Excel para comparar más de una condición simultáneamente. En este caso verifica que C4 sea mayor que 50 Y menor que 100.'
+  },
+  {
+    s: '2.2 · Funciones de Excel',
+    q: 'En la fórmula =IF(AND(C4>50, C4<100), C4, ""), ¿qué indica el signo = al inicio?',
+    o: ['Que es una función lógica','Que es una comparación matemática','Que la celda contiene una fórmula o función','Que el resultado será texto'],
+    c: 2,
+    f: 'El signo = al inicio indica que la celda contiene una fórmula o función matemática, no un valor de texto simple.'
+  },
+  {
+    s: '2.2 · Funciones de Excel',
+    q: 'Un analista necesita detectar valores atípicamente altos en su dataset. ¿Qué función de Excel usaría?',
+    o: ['MINIMO','PROMEDIO','MAXIMO','TRIM'],
+    c: 2,
+    f: 'La función MAXIMO devuelve el valor más alto en un rango de celdas, lo que permite detectar datos enteros mayores de lo esperado durante la limpieza de datos.'
+  },
+  {
+    s: '2.2 · Funciones de Excel',
+    q: 'Un analista quiere eliminar todo el formato de un rango de celdas. ¿Cuál es el procedimiento correcto?',
+    o: ['Pestaña Inicio → Borrar Formatos → Resaltar rango','Resaltar rango → Pestaña Inicio → Borrar → Borrar Formatos','Pestaña Inicio → Borrar Todo → Resaltar rango','Resaltar rango → Eliminar → Borrar Formatos'],
+    c: 1,
+    f: 'El procedimiento correcto es: Resaltar el rango → Pestaña Inicio → Borrar → Borrar Formatos. Primero se selecciona y luego se aplica la operación.'
+  },
+  {
+    s: '2.3 · Variables y Observaciones',
+    q: '¿Qué es una variable en el contexto del análisis de datos?',
+    o: ['Un error en el conjunto de datos','Cualquier cosa que varía de una instancia a otra y se puede medir','Un tipo de gráfico en Excel','Una columna fija en una base de datos'],
+    c: 1,
+    f: 'Una variable es cualquier cosa que varía de una instancia a otra, que se puede medir y cuyo valor se puede manipular. Son las características clave que se estudiarán en el análisis.'
+  },
+  {
+    s: '2.3 · Variables y Observaciones',
+    q: '¿Cómo se representa cada observación en una hoja de cálculo de Excel?',
+    o: ['Como una columna','Como una fórmula','Como una fila','Como una hoja separada'],
+    c: 2,
+    f: 'Cada observación se representa como un registro en una base de datos o una fila en Excel. La colección de observaciones constituye el conjunto de datos.'
+  },
+  {
+    s: '2.3 · Variables y Observaciones',
+    q: '¿Cuáles son los dos grandes tipos de variables en análisis de datos?',
+    o: ['Positivas y negativas','Simples y complejas','Categóricas y numéricas','Discretas y continuas'],
+    c: 2,
+    f: 'Todas las variables se clasifican en categóricas (valor cualitativo, indican membresía a un grupo) y numéricas (valores cuantitativos).'
+  },
+  {
+    s: '2.3 · Variables y Observaciones',
+    q: '¿Cuál de estos es un ejemplo de variable nominal?',
+    o: ['Rango de clases (1ro, 2do, 3ro)','Color de ojos','Temperatura','Número de automóviles en un estacionamiento'],
+    c: 1,
+    f: 'El color de ojos es nominal — categorías discretas cuyo valor depende de la identidad del objeto, sin que el orden entre categorías importe.'
+  },
+  {
+    s: '2.3 · Variables y Observaciones',
+    q: '¿Cuál de estos es un ejemplo de variable ordinal?',
+    o: ['Sexo','Tipo de animal','Escala de satisfacción: insatisfecho, neutro, satisfecho','Peso en kilogramos'],
+    c: 2,
+    f: 'La escala de satisfacción es ordinal — compuesta por categorías donde el orden entre ellas es importante. El rango de clases de estudiantes (1ro, 2do, 3ro) es otro ejemplo.'
+  },
+  {
+    s: '2.3 · Variables y Observaciones',
+    q: '¿Cuál de estos es un ejemplo de variable discreta?',
+    o: ['Temperatura','Ingresos de ventas','Presión arterial','Cantidad de usuarios en una red'],
+    c: 3,
+    f: 'La cantidad de usuarios es discreta — cuantitativa con un conjunto finito de valores específicos. No puede haber 2,5 usuarios, por ejemplo.'
+  },
+  {
+    s: '2.3 · Variables y Observaciones',
+    q: '¿Por qué es importante conocer el tipo de variable en un dataset?',
+    o: ['Para saber cuánto espacio ocupa en disco','Porque algunos tipos de análisis y visualizaciones están diseñados para ciertos tipos de datos','Para determinar si el dataset es público o privado','Para calcular el número de filas necesarias'],
+    c: 1,
+    f: 'El tipo de variable determina qué análisis aplicar y qué gráfico usar: barras para nominales, dispersión para continuas, etc. Elegir la visualización incorrecta puede llevar a conclusiones erróneas.'
+  }
+];
+
+let cur = 0, score = 0, answered = false;
+const ss = {};
+Q.forEach(function(q) {
+  if (!ss[q.s]) ss[q.s] = {c:0, t:0};
+  ss[q.s].t++;
+});
+
+function render() {
+  const q = Q[cur];
+  document.getElementById('spill').textContent = q.s;
+  document.getElementById('qtext').textContent = q.q;
+  document.getElementById('qcnt').textContent = 'Pregunta ' + (cur+1) + ' de ' + Q.length;
+  document.getElementById('slive').textContent = score + ' correcta' + (score!==1?'s':'');
+  document.getElementById('pbar').style.width = ((cur/Q.length)*100) + '%';
+  const oe = document.getElementById('opts');
+  oe.innerHTML = '';
+  q.o.forEach(function(txt, i) {
+    const btn = document.createElement('button');
+    btn.className = 'opt';
+    btn.innerHTML = '<span class="ob">' + L[i] + '</span><span>' + txt + '</span>';
+    btn.onclick = function() { sel(i); };
+    oe.appendChild(btn);
+  });
+  const fb = document.getElementById('fb');
+  fb.className = 'fb';
+  fb.textContent = '';
+  document.getElementById('btn').style.display = 'none';
+  answered = false;
+}
+
+function sel(idx) {
+  if (answered) return;
+  answered = true;
+  const q = Q[cur];
+  const btns = document.querySelectorAll('.opt');
+  btns.forEach(function(b) { b.disabled = true; });
+  const fb = document.getElementById('fb');
+  if (idx === q.c) {
+    btns[idx].classList.add('correct');
+    fb.className = 'fb fbok show';
+    fb.textContent = '✓ Correcto — ' + q.f;
+    score++;
+    ss[q.s].c++;
+  } else {
+    btns[idx].classList.add('wrong');
+    btns[q.c].classList.add('reveal');
+    fb.className = 'fb fberr show';
+    fb.textContent = '✗ Incorrecto — ' + q.f;
+  }
+  document.getElementById('slive').textContent = score + ' correcta' + (score!==1?'s':'');
+  const btn = document.getElementById('btn');
+  btn.style.display = 'block';
+  btn.textContent = cur < Q.length-1 ? 'Siguiente →' : 'Ver resultados →';
+}
+
+function next() {
+  cur++;
+  if (cur >= Q.length) { showResult(); return; }
+  render();
+}
+
+function showResult() {
+  document.getElementById('qb').style.display = 'none';
+  document.querySelector('.pw').style.display = 'none';
+  const total = Q.length;
+  const pct = Math.round((score/total)*100);
+  document.getElementById('rnum').textContent = score;
+  document.getElementById('rden').textContent = 'de ' + total + ' preguntas';
+  document.getElementById('rpct').textContent = pct + '% de respuestas correctas';
+  document.getElementById('rok').textContent = score + ' correctas';
+  document.getElementById('rerr').textContent = (total-score) + ' incorrectas';
+  document.getElementById('rpctc').textContent = pct + '%';
+  const bd = document.getElementById('bdown');
+  let html = '<div class="bdtit">Resultados por sección</div>';
+  Object.keys(ss).forEach(function(sec) {
+    const d = ss[sec];
+    const sp = Math.round((d.c/d.t)*100);
+    html += '<div class="bdrow"><div class="bdn">' + sec + '</div><div class="bdm"><div class="mbg"><div class="mf" style="width:' + sp + '%"></div></div><span class="bds">' + d.c + '/' + d.t + '</span></div></div>';
+  });
+  bd.innerHTML = html;
+  let msg = '';
+  if (pct===100) msg = '¡Perfecto! Dominás completamente todos los contenidos del Módulo 2.';
+  else if (pct>=85) msg = '¡Excelente! Tenés una comprensión muy sólida. Revisá las secciones donde fallaste.';
+  else if (pct>=70) msg = 'Buen trabajo. Prestá atención a los tipos de variables y las funciones de Excel.';
+  else if (pct>=50) msg = 'Vas bien. Repasá el material, especialmente variables categóricas vs. numéricas.';
+  else msg = 'Tomáte un tiempo para releer el material del Módulo 2 antes de continuar.';
+  document.getElementById('rmsg').textContent = msg;
+  document.getElementById('res').style.display = 'block';
+  drawBars('logo-bars-2');
+}
+
+function restart() {
+  cur = 0; score = 0; answered = false;
+  Object.keys(ss).forEach(function(k) { ss[k].c = 0; });
+  document.getElementById('res').style.display = 'none';
+  document.getElementById('qb').style.display = 'block';
+  document.querySelector('.pw').style.display = 'block';
+  render();
+}
+
+render();
+</script>
+</body>
+</html>
