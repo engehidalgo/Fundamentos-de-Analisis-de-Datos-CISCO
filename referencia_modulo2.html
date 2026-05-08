@@ -1,0 +1,333 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Referencia – Módulo 2 | Fundamentos de Análisis de Datos | Cisco</title>
+  <style>
+    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+    :root {
+      --cisco-blue: #0060AD; --cisco-blue-dark: #004f91; --cisco-blue-light: #E6F1FB;
+      --green-bg: #EAF3DE; --green-text: #27500A; --green-border: #639922;
+      --amber-bg: #FAEEDA; --amber-text: #633806; --amber-border: #D4900A;
+      --red-bg: #FCEBEB; --red-text: #791F1F;
+      --purple-bg: #EEEDFE; --purple-text: #3C3489;
+      --gray-bg: #F5F5F5; --gray-border: #E0E0E0; --gray-text: #666;
+      --text: #1A1A1A; --text-sec: #555;
+      --radius: 8px; --radius-lg: 12px;
+      --font: 'Segoe UI', system-ui, -apple-system, sans-serif;
+    }
+    body { font-family: var(--font); background: #F0F4F8; min-height: 100vh; padding: 2rem 1rem; }
+    .card { background: #fff; border-radius: 16px; box-shadow: 0 4px 24px rgba(0,0,0,.09); width: 100%; max-width: 820px; margin: 0 auto; overflow: hidden; }
+    .header { display: flex; align-items: center; gap: 16px; padding: 1.25rem 1.75rem; border-bottom: 1px solid #E8E8E8; }
+    .cisco-logo { display: flex; flex-direction: column; align-items: center; gap: 5px; }
+    .cisco-bars { display: flex; align-items: flex-end; gap: 3.5px; }
+    .cisco-bar { background: var(--cisco-blue); border-radius: 1.5px; width: 6px; }
+    .cisco-wordmark { font-size: 17px; font-weight: 700; letter-spacing: 2px; color: var(--cisco-blue); }
+    .header-divider { width: 1px; height: 42px; background: #E0E0E0; margin: 0 4px; }
+    .header-course { font-size: 11px; font-weight: 600; letter-spacing: .5px; color: var(--cisco-blue); text-transform: uppercase; margin-bottom: 3px; }
+    .header-module { font-size: 14px; font-weight: 500; color: var(--text); }
+    .tabs-wrap { padding: 1rem 1.75rem 0; border-bottom: 1px solid #E8E8E8; }
+    .tabs { display: flex; gap: 4px; flex-wrap: wrap; }
+    .tab { padding: 8px 16px; border-radius: var(--radius) var(--radius) 0 0; font-size: 13px; font-weight: 500; cursor: pointer; border: 1px solid transparent; border-bottom: none; background: transparent; color: var(--gray-text); transition: all .15s; font-family: var(--font); }
+    .tab:hover { background: var(--gray-bg); color: var(--text); }
+    .tab.active { background: #fff; border-color: #E8E8E8; color: var(--text); margin-bottom: -1px; position: relative; border-top: 3px solid var(--cisco-blue); }
+    .panel { display: none; padding: 1.5rem 1.75rem; }
+    .panel.active { display: block; }
+    .sec-title { font-size: 11px; font-weight: 600; letter-spacing: .5px; text-transform: uppercase; color: var(--gray-text); margin-bottom: .7rem; margin-top: 1.5rem; }
+    .sec-title:first-child { margin-top: 0; }
+    .tbl-wrap { border: 1px solid #E8E8E8; border-radius: var(--radius-lg); overflow: hidden; margin-bottom: 1rem; }
+    table { width: 100%; border-collapse: collapse; font-size: 13.5px; }
+    th { background: var(--gray-bg); padding: 9px 14px; text-align: left; font-size: 11px; font-weight: 600; letter-spacing: .4px; text-transform: uppercase; color: var(--gray-text); border-bottom: 1px solid #E8E8E8; }
+    td { padding: 10px 14px; border-bottom: 1px solid #F0F0F0; color: var(--text); vertical-align: top; line-height: 1.6; }
+    tr:last-child td { border-bottom: none; }
+    .bold { font-weight: 500; }
+    .dim { color: var(--text-sec); font-size: 13px; }
+    .tag { display: inline-block; font-size: 11px; font-weight: 500; padding: 2px 9px; border-radius: 99px; margin: 2px 3px 2px 0; }
+    .tag-b { background: var(--cisco-blue-light); color: #0C447C; }
+    .tag-g { background: var(--green-bg); color: var(--green-text); }
+    .tag-a { background: var(--amber-bg); color: var(--amber-text); }
+    .tag-r { background: var(--red-bg); color: var(--red-text); }
+    .tag-p { background: var(--purple-bg); color: var(--purple-text); }
+    .tip { background: var(--cisco-blue-light); border-left: 3px solid var(--cisco-blue); border-radius: 0 var(--radius) var(--radius) 0; padding: 10px 14px; font-size: 13.5px; color: #0C447C; line-height: 1.6; margin-bottom: 1rem; }
+    .shortcut-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 8px; margin-bottom: 1rem; }
+    .shortcut-card { background: var(--gray-bg); border: 1px solid var(--gray-border); border-radius: var(--radius); padding: 10px 14px; display: flex; align-items: center; gap: 12px; }
+    .shortcut-key { background: #fff; border: 1px solid #D0D0D0; border-radius: 6px; padding: 4px 10px; font-size: 13px; font-weight: 600; color: var(--text); font-family: monospace; box-shadow: 0 2px 0 #D0D0D0; white-space: nowrap; }
+    .shortcut-desc { font-size: 13px; color: var(--text-sec); }
+    .var-tree { border: 1px solid #E8E8E8; border-radius: var(--radius-lg); overflow: hidden; margin-bottom: 1rem; }
+    .var-root { background: #1B5E20; color: #fff; padding: 10px 16px; font-size: 13px; font-weight: 600; text-align: center; }
+    .var-level1 { display: grid; grid-template-columns: 1fr 1fr; }
+    .var-cat { background: #2E7D32; color: #fff; padding: 9px 14px; font-size: 13px; font-weight: 500; text-align: center; border-right: 1px solid rgba(255,255,255,.2); }
+    .var-cat:last-child { border-right: none; }
+    .var-level2 { display: grid; grid-template-columns: 1fr 1fr 1fr 1fr; border-top: 1px solid #E8E8E8; }
+    .var-sub { padding: 9px 12px; font-size: 12.5px; font-weight: 500; text-align: center; border-right: 1px solid #E8E8E8; }
+    .var-sub:last-child { border-right: none; }
+    .var-sub.nom { background: #E8F5E9; color: #1B5E20; }
+    .var-sub.ord { background: #F1F8E9; color: #33691E; }
+    .var-sub.con { background: #E3F2FD; color: #0D47A1; }
+    .var-sub.dis { background: #E8EAF6; color: #1A237E; }
+    .var-level3 { display: grid; grid-template-columns: 1fr 1fr 1fr 1fr; border-top: 1px solid #F0F0F0; }
+    .var-ex { padding: 8px 12px; font-size: 11.5px; color: var(--text-sec); text-align: center; border-right: 1px solid #F0F0F0; line-height: 1.4; }
+    .var-ex:last-child { border-right: none; }
+    .footer { text-align: center; padding: .75rem; font-size: 11px; color: #B0B0B0; border-top: 1px solid #F0F0F0; }
+  </style>
+</head>
+<body>
+<div class="card">
+  <div class="header">
+    <div class="cisco-logo">
+      <div class="cisco-bars" id="logo-bars"></div>
+      <div class="cisco-wordmark">CISCO</div>
+    </div>
+    <div class="header-divider"></div>
+    <div class="header-text">
+      <div class="header-course">Fundamentos de Análisis de Datos</div>
+      <div class="header-module">Módulo 2 — Referencia de Conceptos Clave</div>
+    </div>
+  </div>
+
+  <div class="tabs-wrap">
+    <div class="tabs">
+      <button class="tab active" onclick="show('herramientas',this)">🛠 Herramientas</button>
+      <button class="tab" onclick="show('excel',this)">📊 Excel</button>
+      <button class="tab" onclick="show('datos',this)">🗃 Datos y Datasets</button>
+      <button class="tab" onclick="show('variables',this)">📐 Variables</button>
+    </div>
+  </div>
+
+  <!-- HERRAMIENTAS -->
+  <div id="panel-herramientas" class="panel active">
+    <div class="sec-title">Las tres herramientas esenciales del analista de datos</div>
+    <div class="tbl-wrap"><table>
+      <thead><tr><th style="width:15%">Herramienta</th><th style="width:30%">¿Qué es?</th><th style="width:30%">¿Para qué sirve?</th><th>Habilidades clave</th></tr></thead>
+      <tbody>
+        <tr>
+          <td><span class="tag tag-b">Excel</span></td>
+          <td>Hoja de cálculo con más de 1.2 mil millones de usuarios. Creada en 1985. Más de 450 funciones integradas.</td>
+          <td>Pequeños datasets, análisis rápido, visualizaciones básicas, tablas dinámicas</td>
+          <td class="dim">Limpieza de datos, fórmulas, gráficos, tablas dinámicas, formato condicional</td>
+        </tr>
+        <tr>
+          <td><span class="tag tag-g">SQL</span></td>
+          <td>Structured Query Language — lenguaje de consulta estructurado para bases de datos relacionales</td>
+          <td>Datasets grandes, bases de datos relacionales. Más rápido que Excel para grandes volúmenes</td>
+          <td class="dim">Crear tablas, recuperar datos, consultas, combinaciones (JOINs)</td>
+        </tr>
+        <tr>
+          <td><span class="tag tag-a">Tableau</span></td>
+          <td>Plataforma líder de análisis y visualización de datos. Conecta múltiples fuentes de datos.</td>
+          <td>Dashboards interactivos, visualizaciones avanzadas para tomadores de decisiones no técnicos</td>
+          <td class="dim">Dashboards, visualizaciones comparativas, conexión a Excel y SQL</td>
+        </tr>
+        <tr>
+          <td><span class="tag tag-p">Kaggle</span></td>
+          <td>Comunidad en línea para científicos de datos y entusiastas del ML</td>
+          <td>Obtener datasets públicos, competir, aprender, compartir proyectos</td>
+          <td class="dim">Datasets CSV, notebooks, concursos, comunidad colaborativa</td>
+        </tr>
+      </tbody>
+    </table></div>
+
+    <div class="sec-title">Comparativa rápida: ¿cuándo usar cada herramienta?</div>
+    <div class="tbl-wrap"><table>
+      <thead><tr><th>Situación</th><th>Herramienta recomendada</th></tr></thead>
+      <tbody>
+        <tr><td>Dataset pequeño, análisis rápido, reporte básico</td><td><span class="tag tag-b">Excel</span></td></tr>
+        <tr><td>Dataset grande en base de datos relacional</td><td><span class="tag tag-g">SQL</span></td></tr>
+        <tr><td>Presentar resultados visualmente a directivos</td><td><span class="tag tag-a">Tableau</span></td></tr>
+        <tr><td>Buscar datasets públicos gratuitos para practicar</td><td><span class="tag tag-p">Kaggle</span></td></tr>
+        <tr><td>Análisis completo: obtener → limpiar → analizar → visualizar</td><td><span class="tag tag-b">Excel</span> + <span class="tag tag-g">SQL</span> + <span class="tag tag-a">Tableau</span></td></tr>
+      </tbody>
+    </table></div>
+  </div>
+
+  <!-- EXCEL -->
+  <div id="panel-excel" class="panel">
+    <div class="sec-title">Estructura de una hoja de cálculo de Excel</div>
+    <div class="tbl-wrap"><table>
+      <thead><tr><th>Concepto</th><th>Detalle</th></tr></thead>
+      <tbody>
+        <tr><td class="bold">Filas</td><td>Identificadas con números (1, 2, 3…). Total: 1,048,576 filas</td></tr>
+        <tr><td class="bold">Columnas</td><td>Identificadas con letras (A, B, C…). Total: 16,384 columnas</td></tr>
+        <tr><td class="bold">Celda</td><td>Intersección de fila y columna. Se identifica como letra+número (A1, B2). Solo una celda está activa a la vez.</td></tr>
+        <tr><td class="bold">Rango</td><td>Conjunto de celdas. Formato: CeldaInicio:CeldaFin (A1:C5 selecciona desde A1 hasta C5)</td></tr>
+        <tr><td class="bold">Hoja de trabajo</td><td>Pestaña individual dentro del libro. Predeterminada: Hoja1</td></tr>
+        <tr><td class="bold">Libro</td><td>Archivo Excel (.xlsx) que contiene una o más hojas de trabajo</td></tr>
+        <tr><td class="bold">Cuadro de Nombre</td><td>Muestra las coordenadas de la celda activa. Escribir coordenadas ahí navega a esa celda.</td></tr>
+      </tbody>
+    </table></div>
+
+    <div class="sec-title">Atajos de teclado esenciales</div>
+    <div class="shortcut-grid">
+      <div class="shortcut-card"><span class="shortcut-key">Ctrl + B</span><span class="shortcut-desc">Negrita</span></div>
+      <div class="shortcut-card"><span class="shortcut-key">Ctrl + I</span><span class="shortcut-desc">Cursiva</span></div>
+      <div class="shortcut-card"><span class="shortcut-key">Ctrl + U</span><span class="shortcut-desc">Subrayado</span></div>
+      <div class="shortcut-card"><span class="shortcut-key">Ctrl + A</span><span class="shortcut-desc">Seleccionar toda la hoja</span></div>
+      <div class="shortcut-card"><span class="shortcut-key">Ctrl + 1</span><span class="shortcut-desc">Formato de celdas</span></div>
+      <div class="shortcut-card"><span class="shortcut-key">Shift + F11</span><span class="shortcut-desc">Nueva hoja de trabajo</span></div>
+    </div>
+
+    <div class="sec-title">Grupos de formato en la pestaña Inicio</div>
+    <div class="tbl-wrap"><table>
+      <thead><tr><th>Grupo</th><th>Qué permite hacer</th></tr></thead>
+      <tbody>
+        <tr><td class="bold">Fuente (Font)</td><td>Estilo, tamaño, formato (negrita/cursiva/subrayado) y color del texto</td></tr>
+        <tr><td class="bold">Alineación (Alignment)</td><td>Alinear e indentar texto, combinar celdas, ajustar texto en celda</td></tr>
+        <tr><td class="bold">Números (Numbers)</td><td>Formatear celdas numéricas: moneda ($), fechas, porcentajes, decimales</td></tr>
+        <tr><td class="bold">Celdas (Cells)</td><td>Insertar/eliminar filas, columnas y hojas. Borrar contenido y formatos.</td></tr>
+      </tbody>
+    </table></div>
+
+    <div class="sec-title">Funciones clave mencionadas en el módulo</div>
+    <div class="tbl-wrap"><table>
+      <thead><tr><th>Función</th><th>Qué hace</th><th>Ejemplo de uso</th></tr></thead>
+      <tbody>
+        <tr><td><span class="tag tag-b">SUM()</span></td><td>Suma un rango de celdas</td><td class="dim">=SUM(A1:A10) — suma todos los valores de A1 a A10</td></tr>
+        <tr><td><span class="tag tag-b">MAXIMO()</span></td><td>Devuelve el valor máximo de un rango</td><td class="dim">Útil para detectar valores atípicamente altos en limpieza de datos</td></tr>
+        <tr><td><span class="tag tag-b">MINIMO()</span></td><td>Devuelve el valor mínimo de un rango</td><td class="dim">Útil para detectar valores atípicamente bajos en limpieza de datos</td></tr>
+        <tr><td><span class="tag tag-b">IF()</span></td><td>Evalúa una condición y devuelve un valor según sea verdadera o falsa</td><td class="dim">=IF(A1>100, "Alto", "Normal")</td></tr>
+        <tr><td><span class="tag tag-b">AND()</span></td><td>Función lógica para comparar más de una condición al mismo tiempo</td><td class="dim">=IF(AND(C4>50, C4&lt;100), C4, "")</td></tr>
+      </tbody>
+    </table></div>
+
+    <div class="sec-title">Importar archivos CSV a Excel</div>
+    <div class="tbl-wrap"><table>
+      <thead><tr><th>Concepto</th><th>Detalle</th></tr></thead>
+      <tbody>
+        <tr><td class="bold">CSV</td><td>Comma Separated Values — valores separados por comas. Formato estándar para intercambio de datos.</td></tr>
+        <tr><td class="bold">Delimitador</td><td>Carácter que separa los campos. En CSV estándar es la coma (,).</td></tr>
+        <tr><td class="bold">Configuración regional</td><td>Si Windows usa separador distinto de coma, Excel puede cargar CSV incorrectamente. Solución: cambiar formato regional a "Inglés (Estados Unidos)"</td></tr>
+      </tbody>
+    </table></div>
+  </div>
+
+  <!-- DATOS Y DATASETS -->
+  <div id="panel-datos" class="panel">
+    <div class="sec-title">Conceptos fundamentales de datos</div>
+    <div class="tbl-wrap"><table>
+      <thead><tr><th>Término</th><th>Definición</th><th>Ejemplo</th></tr></thead>
+      <tbody>
+        <tr><td class="bold">Conjunto de datos</td><td>Una recopilación de datos relacionados</td><td class="dim">Dataset de películas de Kaggle con 7 archivos CSV</td></tr>
+        <tr><td class="bold">Metadatos</td><td>Información sobre el conjunto de datos: qué contiene y cómo está formateado</td><td class="dim">movies_metadata.csv con título, duración, presupuesto, popularidad</td></tr>
+        <tr><td class="bold">Observación</td><td>Registro de valores de un conjunto de variables — equivale a una fila en Excel</td><td class="dim">Una fila con datos de una película específica</td></tr>
+        <tr><td class="bold">Variable</td><td>Característica que varía de una instancia a otra y se puede medir</td><td class="dim">Título, duración, presupuesto, popularidad</td></tr>
+        <tr><td class="bold">Valor / Punto de datos</td><td>El valor específico de una variable en una observación concreta</td><td class="dim">Presupuesto = $237,000,000</td></tr>
+      </tbody>
+    </table></div>
+
+    <div class="sec-title">Tipos de datasets según acceso</div>
+    <div class="tbl-wrap"><table>
+      <thead><tr><th>Tipo</th><th>Descripción</th><th>Ejemplo</th></tr></thead>
+      <tbody>
+        <tr><td><span class="tag tag-r">Privado</span></td><td>Acceso limitado a quienes tienen permiso</td><td class="dim">Datos de pacientes de un médico, registros internos de empresa</td></tr>
+        <tr><td><span class="tag tag-g">Público</span></td><td>Disponible para cualquier persona en Internet</td><td class="dim">Repositorio de datos de la OMS, datasets de Kaggle, datos abiertos del IBGE</td></tr>
+      </tbody>
+    </table></div>
+
+    <div class="sec-title">Formatos de datos más comunes</div>
+    <div class="tbl-wrap"><table>
+      <thead><tr><th>Formato</th><th>Descripción</th></tr></thead>
+      <tbody>
+        <tr><td><span class="tag tag-b">Números</span></td><td>Calificaciones de productos, ventas, temperaturas, cantidades</td></tr>
+        <tr><td><span class="tag tag-b">Texto</span></td><td>Reseñas de clientes, nombres, descripciones</td></tr>
+        <tr><td><span class="tag tag-b">Imágenes</span></td><td>Fotos de productos, imágenes médicas</td></tr>
+        <tr><td><span class="tag tag-b">Audio</span></td><td>Grabaciones de llamadas, señales de sensores</td></tr>
+        <tr><td><span class="tag tag-b">Datos de sensores (IoT)</span></td><td>Temperatura, presión, movimiento, GPS</td></tr>
+      </tbody>
+    </table></div>
+
+    <div class="sec-title">Fuentes de datos mencionadas en el módulo</div>
+    <div class="tbl-wrap"><table>
+      <thead><tr><th>Fuente</th><th>Tipo</th><th>Descripción</th></tr></thead>
+      <tbody>
+        <tr><td class="bold">Kaggle</td><td><span class="tag tag-g">Público</span></td><td>Comunidad con miles de datasets: imágenes, CSV, series financieras, reseñas, letras de canciones y más</td></tr>
+        <tr><td class="bold">GitHub</td><td><span class="tag tag-g">Público</span></td><td>Repositorio de código y datos compartidos por la comunidad técnica</td></tr>
+        <tr><td class="bold">OMS</td><td><span class="tag tag-g">Público</span></td><td>Estadísticas de salud de 194 países miembros</td></tr>
+        <tr><td class="bold">Organización interna</td><td><span class="tag tag-r">Privado</span></td><td>Datos proporcionados por la empresa u organización para la que trabajás</td></tr>
+        <tr><td class="bold">Web scraping / API</td><td><span class="tag tag-a">Técnico</span></td><td>Técnica avanzada para crear tu propio dataset extrayendo datos de sitios web</td></tr>
+      </tbody>
+    </table></div>
+  </div>
+
+  <!-- VARIABLES -->
+  <div id="panel-variables" class="panel">
+    <div class="sec-title">Árbol de tipos de variables</div>
+    <div class="var-tree">
+      <div class="var-root">Variable</div>
+      <div class="var-level1">
+        <div class="var-cat">Categórica · Valor cualitativo discreto</div>
+        <div class="var-cat">Numérica · Valor cuantitativo</div>
+      </div>
+      <div class="var-level2">
+        <div class="var-sub nom">Nominal</div>
+        <div class="var-sub ord">Ordinal</div>
+        <div class="var-sub con">Continua</div>
+        <div class="var-sub dis">Discreta</div>
+      </div>
+      <div class="var-level3">
+        <div class="var-ex">Sin orden entre categorías. Ej: sexo, color de ojos, tipo de animal</div>
+        <div class="var-ex">El orden importa. Ej: 1ro/2do/3ro, insatisfecho/neutro/satisfecho</div>
+        <div class="var-ex">Rango infinito de valores. Ej: temperatura, ingresos, peso, presión</div>
+        <div class="var-ex">Conjunto finito de valores enteros. Ej: nº de usuarios, nº de autos</div>
+      </div>
+    </div>
+
+    <div class="sec-title">Detalle de cada tipo de variable</div>
+    <div class="tbl-wrap"><table>
+      <thead><tr><th>Tipo</th><th>Categoría</th><th>Descripción</th><th>Ejemplos</th></tr></thead>
+      <tbody>
+        <tr><td><span class="tag tag-g">Nominal</span></td><td>Categórica</td><td>Dos o más categorías sin orden implícito. El valor depende de la identidad del objeto.</td><td class="dim">Sexo, color de ojos, tipo de animal, país</td></tr>
+        <tr><td><span class="tag tag-g">Ordinal</span></td><td>Categórica</td><td>Dos o más categorías donde el orden entre ellas es importante.</td><td class="dim">Rango de clases (1ro, 2do, 3ro), escala de satisfacción, nivel educativo</td></tr>
+        <tr><td><span class="tag tag-b">Continua</span></td><td>Numérica</td><td>Puede medirse a lo largo de un rango o secuencia. Puede tomar cualquier valor dentro del rango.</td><td class="dim">Temperatura, tiempo, ingresos, volumen de ventas, peso, presión arterial</td></tr>
+        <tr><td><span class="tag tag-b">Discreta</span></td><td>Numérica</td><td>Cuantitativa pero con un conjunto finito y específico de valores posibles.</td><td class="dim">Número de sensores, cantidad de usuarios, número de automóviles, cantidad de visitas</td></tr>
+      </tbody>
+    </table></div>
+
+    <div class="sec-title">Subtipos de variables continuas</div>
+    <div class="tbl-wrap"><table>
+      <thead><tr><th>Subtipo</th><th>Descripción</th><th>Ejemplo</th></tr></thead>
+      <tbody>
+        <tr><td class="bold">De intervalo</td><td>Puede tomar cualquier valor dentro del rango. El cero no significa ausencia total.</td><td class="dim">Temperatura (0°C no significa "sin temperatura"), tiempo</td></tr>
+        <tr><td class="bold">De relación</td><td>Variable de intervalo donde el cero SÍ significa ausencia total de esa variable.</td><td class="dim">Ingresos ($0 = sin ingresos), volumen de ventas (0 = sin ventas)</td></tr>
+      </tbody>
+    </table></div>
+
+    <div class="sec-title">¿Por qué importa el tipo de variable?</div>
+    <div class="tip">💡 El tipo de variable determina qué análisis y qué visualización aplicar. Las variables nominales se prestan a gráficos de barras. Las continuas permiten diagramas de dispersión. Las ordinales permiten análisis de rangos. Elegir la visualización incorrecta puede llevar a conclusiones erróneas.</div>
+
+    <div class="tbl-wrap"><table>
+      <thead><tr><th>Tipo de variable</th><th>Visualizaciones sugeridas</th></tr></thead>
+      <tbody>
+        <tr><td><span class="tag tag-g">Nominal</span></td><td>Gráfico de barras, gráfico de torta (pocas categorías)</td></tr>
+        <tr><td><span class="tag tag-g">Ordinal</span></td><td>Gráfico de barras ordenado, mapa de calor</td></tr>
+        <tr><td><span class="tag tag-b">Continua</span></td><td>Diagrama de dispersión, histograma, línea de tiempo</td></tr>
+        <tr><td><span class="tag tag-b">Discreta</span></td><td>Gráfico de barras, gráfico de puntos</td></tr>
+      </tbody>
+    </table></div>
+  </div>
+
+  <div class="footer">Fundamentos de Análisis de Datos · Cisco · Módulo 2</div>
+</div>
+<script>
+const BAR_H = [18,28,38,48,38,48,38,28,18];
+function drawBars(id) {
+  const el = document.getElementById(id);
+  if (!el) return;
+  el.innerHTML = '';
+  BAR_H.forEach(h => {
+    const b = document.createElement('div');
+    b.className = 'cisco-bar';
+    b.style.height = h + 'px';
+    el.appendChild(b);
+  });
+}
+drawBars('logo-bars');
+function show(id, btn) {
+  document.querySelectorAll('.panel').forEach(p => p.classList.remove('active'));
+  document.querySelectorAll('.tab').forEach(t => t.classList.remove('active'));
+  document.getElementById('panel-' + id).classList.add('active');
+  btn.classList.add('active');
+}
+</script>
+</body>
+</html>
