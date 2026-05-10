@@ -16,14 +16,15 @@
     }
     body { font-family: var(--f); background: #F0F4F8; min-height: 100vh; display: flex; align-items: flex-start; justify-content: center; padding: 2rem 1rem; }
     .card { background: #fff; border-radius: 16px; box-shadow: 0 4px 24px rgba(0,0,0,.09); width: 100%; max-width: 700px; overflow: hidden; }
-    .hdr { display: flex; align-items: center; gap: 16px; padding: 1.25rem 1.75rem; border-bottom: 1px solid #E8E8E8; }
+    .hdr { border-bottom: 1px solid #E8E8E8; }
+    .hdr-top { display: flex; align-items: center; gap: 16px; padding: 1.25rem 1.75rem 1rem; background: linear-gradient(135deg, #0060AD 0%, #004f91 100%); }
     .cisco-logo { display: flex; flex-direction: column; align-items: center; gap: 5px; }
     .cisco-bars { display: flex; align-items: flex-end; gap: 3.5px; }
-    .cisco-bar { background: var(--cb); border-radius: 1.5px; width: 6px; }
-    .cisco-wm { font-size: 17px; font-weight: 700; letter-spacing: 2px; color: var(--cb); }
-    .hdiv { width: 1px; height: 42px; background: #E0E0E0; margin: 0 4px; }
-    .hcourse { font-size: 11px; font-weight: 600; letter-spacing: .5px; color: var(--cb); text-transform: uppercase; margin-bottom: 3px; }
-    .hmod { font-size: 14px; font-weight: 500; color: var(--tx); }
+    .cisco-bar { background: #fff; border-radius: 1.5px; width: 6px; opacity: .9; }
+    .cisco-wm { font-size: 17px; font-weight: 700; letter-spacing: 2px; color: #fff; }
+    .hdiv { width: 1px; height: 42px; background: rgba(255,255,255,.3); margin: 0 4px; }
+    .hcourse { font-size: 11px; font-weight: 600; letter-spacing: .5px; color: rgba(255,255,255,.8); text-transform: uppercase; margin-bottom: 3px; }
+    .hmod { font-size: 14px; font-weight: 500; color: #fff; }
     .pw { padding: .9rem 1.75rem; border-bottom: 1px solid #F0F0F0; }
     .pbg { height: 4px; background: #E8E8E8; border-radius: 99px; overflow: hidden; }
     .pf { height: 100%; background: var(--cb); border-radius: 99px; transition: width .4s; }
@@ -79,19 +80,21 @@
 <body>
 <div class="card">
   <div class="hdr">
-    <div class="cisco-logo">
-      <div class="cisco-bars" id="logo-bars"></div>
-      <div class="cisco-wm">CISCO</div>
-    </div>
-    <div class="hdiv"></div>
-    <div>
-      <div class="hcourse">Fundamentos de Análisis de Datos</div>
-      <div class="hmod">Módulo 2 — Recopilación e Investigación de Datos</div>
+    <div class="hdr-top">
+      <div class="cisco-logo">
+        <div class="cisco-bars" id="logo-bars"></div>
+        <div class="cisco-wm">CISCO</div>
+      </div>
+      <div class="hdiv"></div>
+      <div>
+        <div class="hcourse">Fundamentos de Análisis de Datos</div>
+        <div class="hmod">Módulo 2 — Recopilación e Investigación de Datos</div>
+      </div>
     </div>
   </div>
   <div class="pw">
     <div class="pbg"><div class="pf" id="pbar" style="width:0%"></div></div>
-    <div class="pl"><span id="qcnt">Pregunta 1 de 30</span><span class="sc" id="slive">0 correctas</span></div>
+    <div class="pl"><span id="qcnt">Pregunta 1 de 20</span><span class="sc" id="slive">0 correctas</span></div>
   </div>
   <div class="qb" id="qb">
     <div class="pill" id="spill"></div>
@@ -101,7 +104,10 @@
     <div class="nav"><button class="btn" id="btn" onclick="next()">Siguiente →</button></div>
   </div>
   <div class="res" id="res">
-    <div class="rlogo"><div class="cisco-bars" id="logo-bars-2"></div><div class="cisco-wm">CISCO</div></div>
+    <div class="rlogo">
+      <div class="cisco-bars" id="logo-bars-2"></div>
+      <div class="cisco-wm">CISCO</div>
+    </div>
     <div class="rscore" id="rnum"></div>
     <div class="rden" id="rden"></div>
     <div class="rpct" id="rpct"></div>
@@ -130,236 +136,52 @@ function drawBars(id) {
   });
 }
 drawBars('logo-bars');
-
 const L = ['A','B','C','D'];
-
 const Q = [
-  {
-    s: '2.1 · Datos y Conjuntos de Datos',
-    q: '¿Cómo se denomina una recopilación de datos?',
-    o: ['Metadatos','Conjunto de datos','Archivo CSV','Base de datos'],
-    c: 1,
-    f: 'Una recopilación de datos se denomina conjunto de datos. Puede existir para uso privado de una organización o compartirse públicamente en Internet.'
-  },
-  {
-    s: '2.1 · Datos y Conjuntos de Datos',
-    q: '¿Qué son los metadatos en el contexto de un conjunto de datos?',
-    o: ['Los datos numéricos del conjunto','La información sobre el conjunto de datos: qué contiene y cómo está formateado','El archivo principal de análisis','Los datos históricos del conjunto'],
-    c: 1,
-    f: 'Los metadatos son información sobre el conjunto de datos, incluyendo descripción de lo que contiene y cómo está formateado. Son herramientas valiosas para que los analistas comprendan los datos.'
-  },
-  {
-    s: '2.1 · Datos y Conjuntos de Datos',
-    q: '¿Cuál es uno de los formatos más comunes para empaquetar e intercambiar datos?',
-    o: ['PDF','DOCX','CSV — valores separados por comas','ZIP'],
-    c: 2,
-    f: 'El formato CSV (valores separados por comas) es uno de los más comunes para empaquetar e intercambiar datos. Los conjuntos de datos públicos suelen estar compuestos por varios archivos CSV.'
-  },
-  {
-    s: '2.1 · Datos y Conjuntos de Datos',
-    q: '¿Cuál es un ejemplo de conjunto de datos privado?',
-    o: ['Repositorio de datos de la OMS','Conjunto de datos de películas en Kaggle','Datos de pacientes de un médico','Dataset de GitHub público'],
-    c: 2,
-    f: 'El conjunto de datos de pacientes de un médico es un ejemplo de dataset privado, ya que el acceso está limitado a quienes tienen permiso para usarlo.'
-  },
-  {
-    s: '2.1 · Datos y Conjuntos de Datos',
-    q: '¿Cuál herramienta se usa para importar y trabajar con archivos CSV en este módulo?',
-    o: ['Photoshop','PowerPoint','Excel','Word'],
-    c: 2,
-    f: 'Los archivos CSV se pueden importar a Excel para su posterior investigación y análisis. Excel es una de las herramientas más usadas para trabajar con datos tabulares.'
-  },
-  {
-    s: '2.1.3 · Herramientas de Análisis',
-    q: '¿Qué herramienta de análisis de datos es ideal para pequeños conjuntos de datos y análisis rápido?',
-    o: ['SQL','Tableau','Kaggle','Excel'],
-    c: 3,
-    f: 'Excel es la herramienta adecuada para pequeños conjuntos de datos y análisis rápido. Permite manipular datos, resumirlos con tablas dinámicas y crear visualizaciones.'
-  },
-  {
-    s: '2.1.3 · Herramientas de Análisis',
-    q: '¿Qué significa la sigla SQL?',
-    o: ['Simple Query Language','Structured Query Language — Lenguaje de Consulta Estructurado','Standard Query Logic','System Query Language'],
-    c: 1,
-    f: 'SQL significa Structured Query Language (Lenguaje de Consulta Estructurado). Es una potente herramienta de administración de bases de datos relacionales.'
-  },
-  {
-    s: '2.1.3 · Herramientas de Análisis',
-    q: '¿Cuál es la principal ventaja de SQL sobre Excel?',
-    o: ['Es más fácil de aprender','Tiene mejores gráficos','Es más rápido y puede manejar conjuntos de datos mucho más grandes','Funciona sin conexión a internet'],
-    c: 2,
-    f: 'SQL es más rápido y puede manejar conjuntos de datos mucho más grandes que Excel. Se utiliza para acceder, leer, manipular y analizar datos en bases de datos relacionales.'
-  },
-  {
-    s: '2.1.3 · Herramientas de Análisis',
-    q: '¿Para qué sirve principalmente Tableau?',
-    o: ['Para escribir consultas SQL','Para análisis y visualización — crear dashboards comprensibles para tomadores de decisiones no técnicos','Para almacenar grandes volúmenes de datos','Para hacer web scraping'],
-    c: 1,
-    f: 'Tableau es una de las herramientas de análisis y visualización de datos más utilizadas. Permite presentar datos en formatos que los responsables no técnicos pueden comprender fácilmente.'
-  },
-  {
-    s: '2.1.3 · Herramientas de Análisis',
-    q: '¿Qué es Kaggle?',
-    o: ['Un lenguaje de programación para análisis','Una herramienta de hojas de cálculo de Google','Una comunidad en línea para científicos de datos y entusiastas del aprendizaje automático','Un sistema de gestión de bases de datos relacionales'],
-    c: 2,
-    f: 'Kaggle es una comunidad en línea para científicos de datos y entusiastas del ML para compartir ideas, inspirarse y competir para resolver desafíos de ciencia de datos.'
-  },
-  {
-    s: '2.1.3 · Herramientas de Análisis',
-    q: '¿Cuántos usuarios de Excel hay en el mundo aproximadamente?',
-    o: ['500 millones','800 millones','1,2 mil millones','2 mil millones'],
-    c: 2,
-    f: 'Hay más de 1,2 mil millones de usuarios de Excel en todo el mundo. Fue desarrollado en 1985 originalmente como herramienta de contabilidad.'
-  },
-  {
-    s: '2.1.3 · Herramientas de Análisis',
-    q: '¿Cuántas funciones integradas tiene Excel aproximadamente?',
-    o: ['Más de 100','Más de 250','Más de 450','Más de 1000'],
-    c: 2,
-    f: 'Excel tiene más de 450 funciones integradas capaces de realizar agregaciones, manipulaciones de datos y visualizaciones, haciéndolo una herramienta ideal para analistas.'
-  },
-  {
-    s: '2.2 · Conceptos Básicos de Excel',
-    q: '¿Cuántas filas y columnas tiene una hoja de cálculo de Excel?',
-    o: ['1.000 filas y 100 columnas','1.048.576 filas y 16.384 columnas','500.000 filas y 10.000 columnas','Ilimitadas filas y columnas'],
-    c: 1,
-    f: 'Una hoja de cálculo de Excel tiene 1.048.576 filas y 16.384 columnas. Las filas se identifican con números y las columnas con letras.'
-  },
-  {
-    s: '2.2 · Conceptos Básicos de Excel',
-    q: '¿Cómo se identifica correctamente una celda en Excel?',
-    o: ['Solo por su número de fila','Solo por su letra de columna','Por la letra de columna seguida del número de fila — ej: A1, B2','Por el número de fila seguido de la letra de columna — ej: 1A, 2B'],
-    c: 2,
-    f: 'Una referencia de celda es siempre la letra de la columna seguida del número de fila, como A1 o B2. Las coordenadas de la celda activa se muestran en el Cuadro de Nombre de Celda.'
-  },
-  {
-    s: '2.2 · Conceptos Básicos de Excel',
-    q: '¿Qué sucede cuando se escribe A1:C5 en el Cuadro de Nombre de Celda?',
-    o: ['Se crea una nueva hoja de cálculo','Se selecciona el rango de celdas entre A1 y C5','Se elimina el contenido de esas celdas','Se formatea el rango como tabla'],
-    c: 1,
-    f: 'Al escribir A1:C5 en el Cuadro de Nombre de Celda, se selecciona el rango de celdas entre A1 y C5. El formato para rangos es siempre CeldaInicio:CeldaFin.'
-  },
-  {
-    s: '2.2 · Conceptos Básicos de Excel',
-    q: '¿Cuál es el atajo de teclado para poner texto en negrita en Excel?',
-    o: ['Ctrl + N','Ctrl + B','Ctrl + G','Alt + B'],
-    c: 1,
-    f: 'Ctrl + B se usa para poner en negrita. Ctrl + I es para cursiva y Ctrl + U para subrayado.'
-  },
-  {
-    s: '2.2 · Conceptos Básicos de Excel',
-    q: '¿Qué ocurre con los datos cuando se elimina una hoja de trabajo de Excel?',
-    o: ['Se mueven automáticamente a otra hoja','Se guardan en OneDrive','Los datos se pierden','Se archivan en el historial de versiones'],
-    c: 2,
-    f: 'Cuando se elimina una hoja de trabajo, los datos se pierden. No es posible recuperarla, a menos que el archivo tuviera guardada una versión anterior.'
-  },
-  {
-    s: '2.2 · Conceptos Básicos de Excel',
-    q: '¿Cuál es el atajo de teclado para agregar una nueva hoja de trabajo en Excel?',
-    o: ['Ctrl + N','Alt + F11','Shift + F11','Ctrl + T'],
-    c: 2,
-    f: 'El atajo Shift + F11 agrega una nueva hoja de trabajo. También se puede hacer clic en el botón + junto a las pestañas de hojas de trabajo.'
-  },
-  {
-    s: '2.2 · Conceptos Básicos de Excel',
-    q: '¿Qué carácter delimitador usa un archivo CSV para separar los datos en columnas?',
-    o: ['Punto y coma (;)','Dos puntos (:)','Coma (,)','Signo de dólar ($)'],
-    c: 2,
-    f: 'CSV significa valores separados por comas. La coma (,) es el delimitador estándar que separa los datos en columnas al importarlos a Excel.'
-  },
-  {
-    s: '2.2 · Conceptos Básicos de Excel',
-    q: '¿Cuál es la extensión predeterminada con la que Excel guarda los libros?',
-    o: ['.xls','.xlsx','.csv','.xlsm'],
-    c: 1,
-    f: 'Excel guarda los libros con la extensión .xlsx de manera predeterminada. Esta es la extensión estándar del formato moderno de Excel.'
-  },
-  {
-    s: '2.2 · Funciones de Excel',
-    q: 'En la fórmula =IF(AND(C4>50, C4<100), C4, ""), ¿qué función permite comparar más de una condición al mismo tiempo?',
-    o: ['IF','El signo igual =','AND','C4>50, C4<100'],
-    c: 2,
-    f: 'AND es una función lógica de Excel para comparar más de una condición simultáneamente. En este caso verifica que C4 sea mayor que 50 Y menor que 100.'
-  },
-  {
-    s: '2.2 · Funciones de Excel',
-    q: 'En la fórmula =IF(AND(C4>50, C4<100), C4, ""), ¿qué indica el signo = al inicio?',
-    o: ['Que es una función lógica','Que es una comparación matemática','Que la celda contiene una fórmula o función','Que el resultado será texto'],
-    c: 2,
-    f: 'El signo = al inicio indica que la celda contiene una fórmula o función matemática, no un valor de texto simple.'
-  },
-  {
-    s: '2.2 · Funciones de Excel',
-    q: 'Un analista necesita detectar valores atípicamente altos en su dataset. ¿Qué función de Excel usaría?',
-    o: ['MINIMO','PROMEDIO','MAXIMO','TRIM'],
-    c: 2,
-    f: 'La función MAXIMO devuelve el valor más alto en un rango de celdas, lo que permite detectar datos enteros mayores de lo esperado durante la limpieza de datos.'
-  },
-  {
-    s: '2.2 · Funciones de Excel',
-    q: 'Un analista quiere eliminar todo el formato de un rango de celdas. ¿Cuál es el procedimiento correcto?',
-    o: ['Pestaña Inicio → Borrar Formatos → Resaltar rango','Resaltar rango → Pestaña Inicio → Borrar → Borrar Formatos','Pestaña Inicio → Borrar Todo → Resaltar rango','Resaltar rango → Eliminar → Borrar Formatos'],
-    c: 1,
-    f: 'El procedimiento correcto es: Resaltar el rango → Pestaña Inicio → Borrar → Borrar Formatos. Primero se selecciona y luego se aplica la operación.'
-  },
-  {
-    s: '2.3 · Variables y Observaciones',
-    q: '¿Qué es una variable en el contexto del análisis de datos?',
-    o: ['Un error en el conjunto de datos','Cualquier cosa que varía de una instancia a otra y se puede medir','Un tipo de gráfico en Excel','Una columna fija en una base de datos'],
-    c: 1,
-    f: 'Una variable es cualquier cosa que varía de una instancia a otra, que se puede medir y cuyo valor se puede manipular. Son las características clave que se estudiarán en el análisis.'
-  },
-  {
-    s: '2.3 · Variables y Observaciones',
-    q: '¿Cómo se representa cada observación en una hoja de cálculo de Excel?',
-    o: ['Como una columna','Como una fórmula','Como una fila','Como una hoja separada'],
-    c: 2,
-    f: 'Cada observación se representa como un registro en una base de datos o una fila en Excel. La colección de observaciones constituye el conjunto de datos.'
-  },
-  {
-    s: '2.3 · Variables y Observaciones',
-    q: '¿Cuáles son los dos grandes tipos de variables en análisis de datos?',
-    o: ['Positivas y negativas','Simples y complejas','Categóricas y numéricas','Discretas y continuas'],
-    c: 2,
-    f: 'Todas las variables se clasifican en categóricas (valor cualitativo, indican membresía a un grupo) y numéricas (valores cuantitativos).'
-  },
-  {
-    s: '2.3 · Variables y Observaciones',
-    q: '¿Cuál de estos es un ejemplo de variable nominal?',
-    o: ['Rango de clases (1ro, 2do, 3ro)','Color de ojos','Temperatura','Número de automóviles en un estacionamiento'],
-    c: 1,
-    f: 'El color de ojos es nominal — categorías discretas cuyo valor depende de la identidad del objeto, sin que el orden entre categorías importe.'
-  },
-  {
-    s: '2.3 · Variables y Observaciones',
-    q: '¿Cuál de estos es un ejemplo de variable ordinal?',
-    o: ['Sexo','Tipo de animal','Escala de satisfacción: insatisfecho, neutro, satisfecho','Peso en kilogramos'],
-    c: 2,
-    f: 'La escala de satisfacción es ordinal — compuesta por categorías donde el orden entre ellas es importante. El rango de clases de estudiantes (1ro, 2do, 3ro) es otro ejemplo.'
-  },
-  {
-    s: '2.3 · Variables y Observaciones',
-    q: '¿Cuál de estos es un ejemplo de variable discreta?',
-    o: ['Temperatura','Ingresos de ventas','Presión arterial','Cantidad de usuarios en una red'],
-    c: 3,
-    f: 'La cantidad de usuarios es discreta — cuantitativa con un conjunto finito de valores específicos. No puede haber 2,5 usuarios, por ejemplo.'
-  },
-  {
-    s: '2.3 · Variables y Observaciones',
-    q: '¿Por qué es importante conocer el tipo de variable en un dataset?',
-    o: ['Para saber cuánto espacio ocupa en disco','Porque algunos tipos de análisis y visualizaciones están diseñados para ciertos tipos de datos','Para determinar si el dataset es público o privado','Para calcular el número de filas necesarias'],
-    c: 1,
-    f: 'El tipo de variable determina qué análisis aplicar y qué gráfico usar: barras para nominales, dispersión para continuas, etc. Elegir la visualización incorrecta puede llevar a conclusiones erróneas.'
-  }
-];
+  { s:'2.1 · Datos y Conjuntos de Datos', q:'¿Cómo se denomina una recopilación de datos?', o:['Metadatos','Conjunto de datos','Archivo CSV','Base de datos'], c:1, f:'Una recopilación de datos se denomina conjunto de datos. Puede existir para uso privado de una organización o compartirse públicamente en Internet.' },
+  { s:'2.1 · Datos y Conjuntos de Datos', q:'¿Qué son los metadatos en el contexto de un conjunto de datos?', o:['Los datos numéricos del conjunto','La información sobre el conjunto de datos: qué contiene y cómo está formateado','El archivo principal de análisis','Los datos históricos del conjunto'], c:1, f:'Los metadatos son información sobre el conjunto de datos, incluyendo descripción de lo que contiene y cómo está formateado. Son herramientas valiosas para que los analistas comprendan los datos.' },
+  { s:'2.1 · Datos y Conjuntos de Datos', q:'¿Cuál es uno de los formatos más comunes para empaquetar e intercambiar datos?', o:['PDF','DOCX','CSV — valores separados por comas','ZIP'], c:2, f:'El formato CSV es uno de los más comunes para empaquetar e intercambiar datos. Los conjuntos de datos públicos suelen estar compuestos por varios archivos CSV relacionados.' },
+  { s:'2.1 · Datos y Conjuntos de Datos', q:'¿Cuál es un ejemplo de conjunto de datos privado?', o:['Repositorio de datos de la OMS','Conjunto de datos de películas en Kaggle','Datos de pacientes de un médico','Dataset de GitHub público'], c:2, f:'El conjunto de datos de pacientes de un médico es privado — el acceso está limitado a quienes tienen permiso. Opuesto al repositorio de la OMS, que es público.' },
+  { s:'2.1.3 · Herramientas de Análisis', q:'¿Qué significa la sigla SQL?', o:['Simple Query Language','Structured Query Language — Lenguaje de Consulta Estructurado','Standard Query Logic','System Query Language'], c:1, f:'SQL significa Structured Query Language (Lenguaje de Consulta Estructurado). Es una potente herramienta de administración de bases de datos relacionales.' },
+  { s:'2.1.3 · Herramientas de Análisis', q:'¿Cuál es la principal ventaja de SQL sobre Excel para análisis de datos?', o:['Es más fácil de aprender','Tiene mejores gráficos','Es más rápido y puede manejar conjuntos de datos mucho más grandes','Funciona sin conexión a internet'], c:2, f:'SQL es más rápido y puede manejar conjuntos de datos mucho más grandes que Excel. Se utiliza para acceder, leer, manipular y analizar datos en bases de datos relacionales.' },
+  { s:'2.1.3 · Herramientas de Análisis', q:'¿Para qué sirve principalmente Tableau?', o:['Para escribir consultas SQL','Para análisis y visualización — crear dashboards comprensibles para tomadores de decisiones no técnicos','Para almacenar grandes volúmenes de datos','Para hacer web scraping'], c:1, f:'Tableau es una de las herramientas de análisis y visualización más utilizadas. Permite presentar datos en formatos que los responsables no técnicos pueden comprender fácilmente.' },
+  { s:'2.1.3 · Herramientas de Análisis', q:'¿Qué es Kaggle?', o:['Un lenguaje de programación para análisis','Una herramienta de hojas de cálculo de Google','Una comunidad en línea para científicos de datos y entusiastas del aprendizaje automático','Un sistema de gestión de bases de datos relacionales'], c:2, f:'Kaggle es una comunidad en línea para científicos de datos y entusiastas del ML para compartir ideas, inspirarse y competir para resolver desafíos de ciencia de datos.' },
+  { s:'2.1.3 · Herramientas de Análisis', q:'¿Cuáles dos afirmaciones describen correctamente a Kaggle?', o:['Proporciona datasets con cargos mínimos','Es una comunidad en línea para compartir ideas Y ofrece concursos de aprendizaje automático','Permite la integración directa de Excel, SQL y Tableau','Es una plataforma exclusiva para empresas Fortune 500'], c:1, f:'Kaggle es una comunidad en línea para compartir ideas y ofrece concursos comunitarios de aprendizaje automático entre entusiastas. Los datasets son gratuitos.' },
+  { s:'2.3 · Variables y Observaciones', q:'¿Qué es una variable en el contexto del análisis de datos?', o:['Un error en el conjunto de datos','Cualquier cosa que varía de una instancia a otra y se puede medir','Un tipo de gráfico en Excel','Una columna fija en una base de datos'], c:1, f:'Una variable es cualquier cosa que varía de una instancia a otra, que se puede medir y cuyo valor se puede manipular. Son las características clave que se estudiarán en el análisis.' },
+  { s:'2.3 · Variables y Observaciones', q:'¿Cómo se representa cada observación en una hoja de cálculo de Excel?', o:['Como una columna','Como una fórmula','Como una fila','Como una hoja separada'], c:2, f:'Cada observación se representa como un registro en una base de datos o una fila en Excel. La colección de observaciones constituye el conjunto de datos.' },
+  { s:'2.3 · Variables y Observaciones', q:'¿Cuáles son los dos grandes tipos de variables en análisis de datos?', o:['Positivas y negativas','Simples y complejas','Categóricas y numéricas','Discretas y continuas'], c:2, f:'Todas las variables se clasifican en categóricas (valor cualitativo, indican membresía a un grupo) y numéricas (valores cuantitativos).' },
+  { s:'2.3 · Variables y Observaciones', q:'¿Cuál de estos es un ejemplo de variable nominal?', o:['Rango de clases (1ro, 2do, 3ro)','Color de ojos','Temperatura','Número de automóviles en un estacionamiento'], c:1, f:'El color de ojos es nominal — categorías discretas cuyo valor depende de la identidad del objeto, sin que el orden entre categorías importe.' },
+  { s:'2.3 · Variables y Observaciones', q:'¿Cuál de estos es un ejemplo de variable ordinal?', o:['Sexo','Tipo de animal','Escala de satisfacción: insatisfecho, neutro, satisfecho','Peso en kilogramos'], c:2, f:'La escala de satisfacción es ordinal — compuesta por categorías donde el orden entre ellas es importante. El rango de clases de estudiantes (1ro, 2do, 3ro) es otro ejemplo.' },
+  { s:'2.3 · Variables y Observaciones', q:'¿Cuál de estos es un ejemplo de variable discreta?', o:['Temperatura','Ingresos de ventas','Presión arterial','Cantidad de usuarios en una red'], c:3, f:'La cantidad de usuarios es discreta — cuantitativa con un conjunto finito de valores específicos. No puede haber 2,5 usuarios, por ejemplo.' },
+  { s:'2.3 · Variables y Observaciones', q:'¿Cuál de estos es un ejemplo de variable continua?', o:['Número de sensores habilitados','Cantidad de automóviles en un estacionamiento','Temperatura corporal','Rango de clases de estudiantes'], c:2, f:'La temperatura corporal es continua — puede medirse a lo largo de un rango de valores y puede tomar cualquier valor dentro de ese rango, incluyendo decimales.' },
+  { s:'2.3 · Variables y Observaciones', q:'¿Por qué es importante conocer el tipo de variable en un dataset?', o:['Para saber cuánto espacio ocupa en disco','Porque algunos tipos de análisis y visualizaciones están diseñados para ciertos tipos de datos','Para determinar si el dataset es público o privado','Para calcular el número de filas necesarias'], c:1, f:'El tipo de variable determina qué análisis aplicar y qué gráfico usar: barras para nominales, dispersión para continuas. Elegir la visualización incorrecta puede llevar a conclusiones erróneas.' },
+  { s:'2.3 · Variables y Observaciones', q:'En el análisis de datos, ¿qué es un punto de datos?', o:['El total de todas las observaciones del dataset','El valor o conjunto de valores de una observación específica','El nombre de una variable en el conjunto de datos','Un error detectado durante la limpieza de datos'], c:1, f:'El valor o conjunto de valores de una observación específica se denomina punto de datos. Cada observación puede representarse como una fila en una hoja de cálculo de Excel.' },
+  { s:'2.3 · Variables y Observaciones', q:'¿Cuál es la diferencia entre una variable de intervalo y una de relación?', o:['No hay diferencia, son lo mismo','En la variable de relación, el cero significa ausencia total de esa variable; en la de intervalo no','La variable de intervalo siempre es discreta','La variable de relación siempre es categórica'], c:1, f:'En las variables de relación, el cero significa que no hay nada de esa variable — ej: ingresos $0 = sin ingresos. En las de intervalo, el cero no implica ausencia total — ej: 0°C no significa sin temperatura.' },
+  { s:'2.1 · Datos y Conjuntos de Datos', q:'¿Cuál de estas es una técnica avanzada para crear tu propio conjunto de datos cuando no encontrás uno disponible?', o:['Descargar datos de Kaggle','Web scraping o uso de APIs','Copiar datos de Wikipedia manualmente','Solicitar datos a Google'], c:1, f:'El web scraping y el uso de APIs son técnicas avanzadas para crear datasets propios extrayendo datos de sitios web. En este curso solo se usan datos existentes disponibles públicamente.' }
+,
 
+  // Árbol de clasificación de variables
+  { s:'2.3 · Clasificación de Variables', q:'¿Cuáles son los dos grandes grupos en los que se clasifican todas las variables?', o:['Continuas y discretas','Nominales y ordinales','Categóricas y numéricas','Simples y compuestas'], c:2, f:'Toda variable pertenece a uno de dos grandes grupos: categórica (valor cualitativo, indica membresía a un grupo) o numérica (valor cuantitativo, medible). Todos los demás tipos son subtipos de estos dos.' },
+  { s:'2.3 · Clasificación de Variables', q:'¿Cuáles son los dos subtipos de las variables categóricas?', o:['Continua y discreta','Nominal y ordinal','De intervalo y de relación','Positiva y negativa'], c:1, f:'Las variables categóricas se dividen en: nominal (categorías sin orden entre sí, como color de ojos) y ordinal (categorías donde el orden importa, como nivel de satisfacción).' },
+  { s:'2.3 · Clasificación de Variables', q:'¿Cuáles son los dos subtipos de las variables numéricas?', o:['Nominal y ordinal','De intervalo y de relación','Continua y discreta','Positiva y negativa'], c:2, f:'Las variables numéricas se dividen en: continua (rango infinito de valores, puede tener decimales) y discreta (conjunto finito de valores enteros específicos).' },
+  { s:'2.3 · Clasificación de Variables', q:'¿Cuáles son los dos subtipos de las variables continuas?', o:['Nominal y ordinal','Positiva y negativa','De intervalo y de relación','Categórica y numérica'], c:2, f:'Las variables continuas se subdividen en: de intervalo (el cero no significa ausencia total, ej: temperatura) y de relación (el cero sí significa ausencia total, ej: ingresos, volumen de ventas).' },
+  { s:'2.3 · Clasificación de Variables', q:'¿Cuál es el árbol correcto de clasificación de la variable "temperatura corporal"?', o:['Variable → Categórica → Ordinal','Variable → Numérica → Discreta','Variable → Numérica → Continua → De intervalo','Variable → Numérica → Continua → De relación'], c:2, f:'La temperatura es: Numérica (valor cuantitativo) → Continua (puede tener decimales, rango infinito) → De intervalo (0°C no significa ausencia de temperatura, solo un punto en la escala).' },
+  { s:'2.3 · Clasificación de Variables', q:'¿Cuál es el árbol correcto de clasificación de la variable "ingresos mensuales"?', o:['Variable → Categórica → Nominal','Variable → Numérica → Discreta','Variable → Numérica → Continua → De intervalo','Variable → Numérica → Continua → De relación'], c:3, f:'Los ingresos son: Numérica → Continua → De relación. Son de relación porque $0 ingresos sí significa ausencia total de ingresos — el cero tiene significado absoluto.' },
+  { s:'2.3 · Clasificación de Variables', q:'¿Cuál es el árbol correcto de clasificación de la variable "nivel educativo" (primaria, secundaria, universitaria)?', o:['Variable → Categórica → Nominal','Variable → Categórica → Ordinal','Variable → Numérica → Discreta','Variable → Numérica → Continua'], c:1, f:'El nivel educativo es: Categórica (no es un número, indica membresía a un grupo) → Ordinal (el orden importa: primaria < secundaria < universitaria). No es nominal porque hay jerarquía.' },
+  { s:'2.3 · Clasificación de Variables', q:'¿Cuál es el árbol correcto de clasificación de la variable "tipo de animal" (perro, gato, ave)?', o:['Variable → Categórica → Nominal','Variable → Categórica → Ordinal','Variable → Numérica → Discreta','Variable → Numérica → Continua'], c:0, f:'El tipo de animal es: Categórica (indica membresía a un grupo) → Nominal (no hay orden entre perro, gato y ave — ninguno es "mayor" que otro). Es solo una etiqueta de identidad.' },
+  { s:'2.3 · Clasificación de Variables', q:'¿Cuál es el árbol correcto de clasificación de la variable "número de sensores activos en una red"?', o:['Variable → Categórica → Nominal','Variable → Categórica → Ordinal','Variable → Numérica → Continua → De relación','Variable → Numérica → Discreta'], c:3, f:'El número de sensores es: Numérica (valor cuantitativo) → Discreta (solo puede tomar valores enteros específicos: 0, 1, 2, 3... No puede haber 2,5 sensores activos).' },
+  // Casos prácticos
+  { s:'2.3 · Casos Prácticos de Variables', q:'Un hospital registra el "grupo sanguíneo" de sus pacientes (A, B, AB, O). ¿Cómo se clasifica esta variable?', o:['Numérica → Continua','Numérica → Discreta','Categórica → Nominal','Categórica → Ordinal'], c:2, f:'El grupo sanguíneo es Categórica → Nominal: indica membresía a un grupo (A, B, AB, O) sin que haya un orden natural entre los grupos. Ningún grupo sanguíneo es "mayor" que otro.' },
+  { s:'2.3 · Casos Prácticos de Variables', q:'Una encuesta mide la satisfacción del cliente con opciones: "Muy insatisfecho, Insatisfecho, Neutro, Satisfecho, Muy satisfecho". ¿Cómo se clasifica?', o:['Numérica → Continua','Numérica → Discreta','Categórica → Nominal','Categórica → Ordinal'], c:3, f:'Es Categórica → Ordinal: las categorías indican membresía a un grupo (categórica) Y tienen un orden claro entre sí (ordinal) — "Muy satisfecho" es claramente mayor que "Insatisfecho".' },
+  { s:'2.3 · Casos Prácticos de Variables', q:'Un e-commerce registra el "volumen de ventas en unidades" por día. ¿Cómo se clasifica esta variable?', o:['Categórica → Nominal','Categórica → Ordinal','Numérica → Continua → De relación','Numérica → Discreta'], c:3, f:'El volumen de ventas en unidades es Numérica → Discreta: es un valor cuantitativo entero (no puede vender 2,5 unidades). Si fuera en dinero (ingresos), sería Numérica → Continua → De relación.' },
+  { s:'2.3 · Casos Prácticos de Variables', q:'Un sensor meteorológico registra la "presión atmosférica" en milibares. ¿Cómo se clasifica?', o:['Categórica → Nominal','Numérica → Discreta','Numérica → Continua → De relación','Numérica → Continua → De intervalo'], c:3, f:'La presión atmosférica es Numérica → Continua → De intervalo: puede tomar cualquier valor decimal y el cero no significa ausencia de presión (0 milibares es un punto en la escala, no "sin presión").' },
+  { s:'2.3 · Casos Prácticos de Variables', q:'Una plataforma registra el "país de origen" de cada usuario. ¿Cómo se clasifica esta variable?', o:['Numérica → Discreta','Categórica → Ordinal','Categórica → Nominal','Numérica → Continua'], c:2, f:'El país de origen es Categórica → Nominal: indica membresía a un grupo (Brasil, Argentina, Colombia...) sin ningún orden natural entre los países. Es una etiqueta de identidad.' },
+  { s:'2.3 · Casos Prácticos de Variables', q:'¿Cuál es la diferencia clave entre una variable de intervalo y una de relación?', o:['La de intervalo es discreta; la de relación es continua','En la de relación, el cero significa ausencia total de esa variable; en la de intervalo no','La de intervalo es categórica; la de relación es numérica','No hay diferencia práctica entre ambas'], c:1, f:'La diferencia clave está en el significado del cero: en variables de relación, 0 significa ausencia total (ej: $0 ingresos = sin ingresos). En variables de intervalo, 0 es solo un punto en la escala (ej: 0°C no significa sin temperatura).' }
+
+];
 let cur = 0, score = 0, answered = false;
 const ss = {};
-Q.forEach(function(q) {
-  if (!ss[q.s]) ss[q.s] = {c:0, t:0};
-  ss[q.s].t++;
-});
-
+Q.forEach(function(q) { if (!ss[q.s]) ss[q.s] = {c:0,t:0}; ss[q.s].t++; });
 function render() {
   const q = Q[cur];
   document.getElementById('spill').textContent = q.s;
@@ -377,12 +199,10 @@ function render() {
     oe.appendChild(btn);
   });
   const fb = document.getElementById('fb');
-  fb.className = 'fb';
-  fb.textContent = '';
+  fb.className = 'fb'; fb.textContent = '';
   document.getElementById('btn').style.display = 'none';
   answered = false;
 }
-
 function sel(idx) {
   if (answered) return;
   answered = true;
@@ -394,8 +214,7 @@ function sel(idx) {
     btns[idx].classList.add('correct');
     fb.className = 'fb fbok show';
     fb.textContent = '✓ Correcto — ' + q.f;
-    score++;
-    ss[q.s].c++;
+    score++; ss[q.s].c++;
   } else {
     btns[idx].classList.add('wrong');
     btns[q.c].classList.add('reveal');
@@ -407,13 +226,7 @@ function sel(idx) {
   btn.style.display = 'block';
   btn.textContent = cur < Q.length-1 ? 'Siguiente →' : 'Ver resultados →';
 }
-
-function next() {
-  cur++;
-  if (cur >= Q.length) { showResult(); return; }
-  render();
-}
-
+function next() { cur++; if (cur >= Q.length) { showResult(); return; } render(); }
 function showResult() {
   document.getElementById('qb').style.display = 'none';
   document.querySelector('.pw').style.display = 'none';
@@ -434,16 +247,15 @@ function showResult() {
   });
   bd.innerHTML = html;
   let msg = '';
-  if (pct===100) msg = '¡Perfecto! Dominás completamente todos los contenidos del Módulo 2.';
+  if (pct===100) msg = '¡Perfecto! Dominás completamente todos los conceptos del Módulo 2.';
   else if (pct>=85) msg = '¡Excelente! Tenés una comprensión muy sólida. Revisá las secciones donde fallaste.';
-  else if (pct>=70) msg = 'Buen trabajo. Prestá atención a los tipos de variables y las funciones de Excel.';
+  else if (pct>=70) msg = 'Buen trabajo. Prestá atención especialmente a los tipos de variables.';
   else if (pct>=50) msg = 'Vas bien. Repasá el material, especialmente variables categóricas vs. numéricas.';
   else msg = 'Tomáte un tiempo para releer el material del Módulo 2 antes de continuar.';
   document.getElementById('rmsg').textContent = msg;
   document.getElementById('res').style.display = 'block';
   drawBars('logo-bars-2');
 }
-
 function restart() {
   cur = 0; score = 0; answered = false;
   Object.keys(ss).forEach(function(k) { ss[k].c = 0; });
@@ -452,7 +264,6 @@ function restart() {
   document.querySelector('.pw').style.display = 'block';
   render();
 }
-
 render();
 </script>
 </body>
