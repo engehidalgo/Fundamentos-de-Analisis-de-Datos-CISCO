@@ -1,0 +1,267 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Quiz Excel | Fundamentos de Análisis de Datos | Cisco</title>
+  <style>
+    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+    :root {
+      --ex: #217346; --exd: #185C37; --exl: #E8F5E9;
+      --cb: #0060AD; --cbl: #E6F1FB;
+      --gb: #EAF3DE; --gbo: #639922; --gt: #27500A;
+      --rb: #FCEBEB; --rbo: #A32D2D; --rt: #791F1F;
+      --gy: #F5F5F5; --gyt: #666; --tx: #1A1A1A;
+      --r: 8px; --rl: 12px;
+      --f: 'Segoe UI', system-ui, sans-serif;
+    }
+    body { font-family: var(--f); background: #F0F4F8; min-height: 100vh; display: flex; align-items: flex-start; justify-content: center; padding: 2rem 1rem; }
+    .card { background: #fff; border-radius: 16px; box-shadow: 0 4px 24px rgba(0,0,0,.09); width: 100%; max-width: 700px; overflow: hidden; }
+    .hdr-top { display: flex; align-items: center; gap: 16px; padding: 1.25rem 1.75rem; background: linear-gradient(135deg, #217346 0%, #185C37 100%); border-bottom: 1px solid #E8E8E8; }
+    .cisco-logo { display: flex; flex-direction: column; align-items: center; gap: 5px; }
+    .cisco-bars { display: flex; align-items: flex-end; gap: 3.5px; }
+    .cisco-bar { background: #fff; border-radius: 1.5px; width: 6px; opacity: .9; }
+    .cisco-wm { font-size: 17px; font-weight: 700; letter-spacing: 2px; color: #fff; }
+    .hdiv { width: 1px; height: 42px; background: rgba(255,255,255,.3); margin: 0 4px; }
+    .hcourse { font-size: 11px; font-weight: 600; letter-spacing: .5px; color: rgba(255,255,255,.8); text-transform: uppercase; margin-bottom: 3px; }
+    .hmod { font-size: 14px; font-weight: 500; color: #fff; }
+    .hbadge { display: inline-flex; align-items: center; gap: 5px; background: rgba(255,255,255,.15); border: 1px solid rgba(255,255,255,.3); border-radius: 99px; padding: 3px 10px; font-size: 11px; color: #fff; font-weight: 500; margin-top: 6px; }
+    .pw { padding: .9rem 1.75rem; border-bottom: 1px solid #F0F0F0; }
+    .pbg { height: 4px; background: #E8E8E8; border-radius: 99px; overflow: hidden; }
+    .pf { height: 100%; background: var(--ex); border-radius: 99px; transition: width .4s; }
+    .pl { display: flex; justify-content: space-between; font-size: 12px; color: var(--gyt); margin-top: 6px; }
+    .sc { color: var(--ex); font-weight: 600; }
+    .qb { padding: 1.5rem 1.75rem; }
+    .pill { display: inline-block; font-size: 10px; font-weight: 600; letter-spacing: .6px; text-transform: uppercase; color: var(--ex); background: var(--exl); padding: 3px 10px; border-radius: 99px; margin-bottom: .85rem; }
+    .qt { font-size: 16px; font-weight: 500; color: var(--tx); line-height: 1.6; margin-bottom: 1.25rem; }
+    .opts { display: flex; flex-direction: column; gap: 8px; }
+    .opt { background: #fff; border: 1.5px solid #E0E0E0; border-radius: var(--r); padding: 12px 16px; font-size: 14px; color: var(--tx); cursor: pointer; text-align: left; line-height: 1.5; transition: border-color .15s, background .15s; display: flex; align-items: flex-start; gap: 12px; width: 100%; font-family: var(--f); }
+    .ob { min-width: 24px; height: 24px; border-radius: 50%; border: 1.5px solid #D0D0D0; display: flex; align-items: center; justify-content: center; font-size: 11px; font-weight: 600; color: #888; flex-shrink: 0; margin-top: 1px; transition: all .15s; }
+    .opt:hover:not(:disabled) { border-color: var(--ex); background: var(--exl); }
+    .opt:hover:not(:disabled) .ob { border-color: var(--ex); color: var(--ex); }
+    .opt.correct { background: var(--gb); border-color: var(--gbo); }
+    .opt.correct .ob { background: var(--gbo); border-color: var(--gbo); color: #fff; }
+    .opt.wrong { background: var(--rb); border-color: var(--rbo); }
+    .opt.wrong .ob { background: var(--rbo); border-color: var(--rbo); color: #fff; }
+    .opt.reveal { background: var(--gb); border-color: var(--gbo); }
+    .opt.reveal .ob { background: var(--gbo); border-color: var(--gbo); color: #fff; }
+    .opt:disabled { cursor: default; }
+    .fb { margin-top: 1rem; font-size: 13.5px; padding: 11px 15px; border-radius: var(--r); line-height: 1.6; display: none; }
+    .fb.show { display: block; }
+    .fbok { background: var(--gb); color: var(--gt); border: 1px solid #97C459; }
+    .fberr { background: var(--rb); color: var(--rt); border: 1px solid #F09595; }
+    .nav { display: flex; justify-content: flex-end; margin-top: 1.25rem; }
+    .btn { background: var(--ex); border: none; border-radius: var(--r); padding: 10px 24px; font-size: 14px; cursor: pointer; color: #fff; font-weight: 600; display: none; font-family: var(--f); transition: background .15s; }
+    .btn:hover { background: var(--exd); }
+    .res { display: none; padding: 2.5rem 1.75rem; text-align: center; }
+    .rlogo { display: flex; flex-direction: column; align-items: center; gap: 5px; margin-bottom: 1.75rem; }
+    .rscore { font-size: 60px; font-weight: 300; color: var(--ex); line-height: 1; }
+    .rden { font-size: 17px; color: var(--gyt); margin-bottom: .3rem; }
+    .rpct { font-size: 13px; color: var(--gyt); margin-bottom: 1.5rem; }
+    .chips { display: flex; gap: 10px; justify-content: center; flex-wrap: wrap; margin-bottom: 1.5rem; }
+    .chip { font-size: 13px; padding: 6px 16px; border-radius: 99px; font-weight: 500; }
+    .cg { background: var(--gb); color: var(--gt); }
+    .cr { background: var(--rb); color: var(--rt); }
+    .ce { background: var(--exl); color: var(--ex); }
+    .bdown { text-align: left; max-width: 460px; margin: 0 auto 1.75rem; border: 1px solid #E8E8E8; border-radius: var(--rl); overflow: hidden; }
+    .bdtit { font-size: 11px; font-weight: 600; text-transform: uppercase; letter-spacing: .5px; color: var(--gyt); padding: 10px 16px; border-bottom: 1px solid #E8E8E8; background: var(--gy); }
+    .bdrow { display: flex; justify-content: space-between; align-items: center; padding: 9px 16px; border-bottom: 1px solid #F0F0F0; }
+    .bdrow:last-child { border-bottom: none; }
+    .bdn { font-size: 13px; color: var(--tx); }
+    .bdm { display: flex; align-items: center; gap: 8px; }
+    .mbg { width: 70px; height: 3px; background: #E8E8E8; border-radius: 99px; overflow: hidden; }
+    .mf { height: 100%; background: var(--ex); border-radius: 99px; }
+    .bds { font-size: 13px; font-weight: 600; color: var(--ex); min-width: 36px; text-align: right; }
+    .rmsg { font-size: 14px; color: var(--gyt); line-height: 1.7; max-width: 460px; margin: 0 auto 1.75rem; }
+    .rbtn { background: var(--ex); border: none; border-radius: var(--r); padding: 12px 32px; font-size: 15px; cursor: pointer; color: #fff; font-weight: 600; font-family: var(--f); }
+    .rbtn:hover { background: var(--exd); }
+    .footer { text-align: center; padding: .75rem; font-size: 11px; color: #B0B0B0; border-top: 1px solid #F0F0F0; }
+  </style>
+</head>
+<body>
+<div class="card">
+  <div class="hdr-top">
+    <div class="cisco-logo">
+      <div class="cisco-bars" id="logo-bars"></div>
+      <div class="cisco-wm">CISCO</div>
+    </div>
+    <div class="hdiv"></div>
+    <div>
+      <div class="hcourse">Fundamentos de Análisis de Datos</div>
+      <div class="hmod">Microsoft Excel — Cuestionario Progresivo</div>
+      <div class="hbadge">📊 Versión 1.0 · Conceptos básicos</div>
+    </div>
+  </div>
+  <div class="pw">
+    <div class="pbg"><div class="pf" id="pbar" style="width:0%"></div></div>
+    <div class="pl"><span id="qcnt">Pregunta 1 de 30</span><span class="sc" id="slive">0 correctas</span></div>
+  </div>
+  <div class="qb" id="qb">
+    <div class="pill" id="spill"></div>
+    <div class="qt" id="qtext"></div>
+    <div class="opts" id="opts"></div>
+    <div class="fb" id="fb"></div>
+    <div class="nav"><button class="btn" id="btn" onclick="next()">Siguiente →</button></div>
+  </div>
+  <div class="res" id="res">
+    <div class="rlogo">
+      <div class="cisco-bars" id="logo-bars-2"></div>
+      <div class="cisco-wm">CISCO</div>
+    </div>
+    <div class="rscore" id="rnum"></div>
+    <div class="rden" id="rden"></div>
+    <div class="rpct" id="rpct"></div>
+    <div class="chips">
+      <span class="chip cg" id="rok"></span>
+      <span class="chip cr" id="rerr"></span>
+      <span class="chip ce" id="rpctc"></span>
+    </div>
+    <div class="bdown" id="bdown"></div>
+    <div class="rmsg" id="rmsg"></div>
+    <button class="rbtn" onclick="restart()">Intentar de nuevo ↺</button>
+  </div>
+  <div class="footer">Fundamentos de Análisis de Datos · Cisco · Microsoft Excel</div>
+</div>
+<script>
+const BAR_H = [18,28,38,48,38,48,38,28,18];
+function drawBars(id) {
+  const el = document.getElementById(id);
+  if (!el) return;
+  el.innerHTML = '';
+  BAR_H.forEach(function(h) {
+    const b = document.createElement('div');
+    b.className = 'cisco-bar';
+    b.style.height = h + 'px';
+    el.appendChild(b);
+  });
+}
+drawBars('logo-bars');
+const L = ['A','B','C','D'];
+const Q = [
+  // Estructura básica
+  { s:'Estructura de Excel', q:'¿Cuántas filas y columnas tiene una hoja de cálculo de Excel?', o:['1.000 filas y 100 columnas','1.048.576 filas y 16.384 columnas','500.000 filas y 10.000 columnas','Ilimitadas filas y columnas'], c:1, f:'Una hoja de Excel tiene 1.048.576 filas identificadas con números y 16.384 columnas identificadas con letras.' },
+  { s:'Estructura de Excel', q:'¿Cómo se identifica correctamente una celda en Excel?', o:['Solo por su número de fila','Solo por su letra de columna','Por la letra de columna seguida del número de fila — ej: A1, B2','Por el número de fila seguido de la letra de columna — ej: 1A, 2B'], c:2, f:'Una referencia de celda es siempre la letra de la columna seguida del número de fila, como A1 o B2.' },
+  { s:'Estructura de Excel', q:'¿Qué sucede cuando se escribe A1:C5 en el Cuadro de Nombre de Celda?', o:['Se crea una nueva hoja de cálculo','Se selecciona el rango de celdas entre A1 y C5','Se elimina el contenido de esas celdas','Se formatea el rango como tabla'], c:1, f:'Al escribir A1:C5 en el Cuadro de Nombre de Celda, se selecciona el rango entre A1 y C5. El formato es siempre CeldaInicio:CeldaFin.' },
+  { s:'Estructura de Excel', q:'¿Cuántas celdas hay activas al mismo tiempo en Excel?', o:['Tantas como se seleccionen','Solo dos','Solo una','Depende del tamaño del monitor'], c:2, f:'Solo una celda está activa a la vez. Es la celda donde se pueden ingresar datos actualmente, indicada por el borde y el Cuadro de Nombre de Celda.' },
+  { s:'Estructura de Excel', q:'¿Qué es un libro de Excel?', o:['Una hoja de cálculo individual','Un archivo Excel (.xlsx) que puede contener una o más hojas de trabajo','Una plantilla de Excel prediseñada','Un rango de celdas seleccionadas'], c:1, f:'Un libro es el archivo Excel (.xlsx) que contiene una o más hojas de trabajo. Al abrir un nuevo archivo de Excel, se crea un libro con una hoja predeterminada llamada Hoja1.' },
+  // Hojas de trabajo
+  { s:'Hojas de Trabajo', q:'¿Cuál es el atajo de teclado para agregar una nueva hoja de trabajo en Excel?', o:['Ctrl + N','Alt + F11','Shift + F11','Ctrl + T'], c:2, f:'Shift + F11 agrega una nueva hoja de trabajo. También se puede hacer clic en el botón + junto a las pestañas.' },
+  { s:'Hojas de Trabajo', q:'¿Qué ocurre con los datos cuando se elimina una hoja de trabajo de Excel?', o:['Se mueven automáticamente a otra hoja','Se guardan en OneDrive','Los datos se pierden permanentemente','Se archivan en el historial de versiones'], c:2, f:'Cuando se elimina una hoja de trabajo, los datos se pierden. No es posible recuperarla a menos que el archivo tuviera guardada una versión anterior.' },
+  { s:'Hojas de Trabajo', q:'¿Cómo se cambia el nombre de una hoja de trabajo en Excel?', o:['Doble clic sobre la pestaña','Clic derecho sobre la pestaña → Cambiar Nombre','Menú Archivo → Renombrar hoja','Ctrl + R sobre la pestaña'], c:1, f:'Para cambiar el nombre de una hoja, se hace clic derecho sobre la pestaña y se selecciona Cambiar Nombre en el menú emergente.' },
+  // Formato
+  { s:'Formato de Celdas', q:'¿Cuál es el atajo de teclado para poner texto en negrita?', o:['Ctrl + N','Ctrl + B','Ctrl + G','Alt + B'], c:1, f:'Ctrl + B pone el contenido en negrita. Ctrl + I es para cursiva y Ctrl + U para subrayado.' },
+  { s:'Formato de Celdas', q:'¿Cuál es el atajo de teclado para poner texto en cursiva?', o:['Ctrl + C','Ctrl + K','Ctrl + I','Ctrl + U'], c:2, f:'Ctrl + I aplica cursiva al contenido de la celda. Recordá: B de Bold (negrita), I de Italic (cursiva), U de Underline (subrayado).' },
+  { s:'Formato de Celdas', q:'¿Cuál es el atajo de teclado para subrayar texto en Excel?', o:['Ctrl + S','Ctrl + U','Ctrl + L','Ctrl + T'], c:1, f:'Ctrl + U aplica subrayado al contenido de la celda. U viene de Underline en inglés.' },
+  { s:'Formato de Celdas', q:'¿Qué grupo de la pestaña Inicio permite formatear celdas numéricas como moneda, porcentaje o fecha?', o:['Grupo Fuente','Grupo Alineación','Grupo Números','Grupo Celdas'], c:2, f:'El Grupo Números en la pestaña Inicio tiene opciones para formatear el contenido de celdas numéricas: moneda ($), fechas, porcentajes, decimales, etc.' },
+  { s:'Formato de Celdas', q:'Un analista quiere eliminar todo el formato de un rango de celdas. ¿Cuál es el procedimiento correcto?', o:['Pestaña Inicio → Borrar Formatos → Resaltar rango','Resaltar rango → Pestaña Inicio → Borrar → Borrar Formatos','Pestaña Inicio → Borrar Todo → Resaltar rango','Resaltar rango → Eliminar → Borrar Formatos'], c:1, f:'El procedimiento correcto es: Resaltar el rango → Pestaña Inicio → Borrar → Borrar Formatos. Primero se selecciona y luego se aplica la operación.' },
+  // Funciones básicas
+  { s:'Funciones Básicas', q:'¿Qué función de Excel suma todos los valores numéricos en un rango de celdas?', o:['PROMEDIO()','CONTAR()','SUMA()','MAXIMO()'], c:2, f:'SUMA() (o SUM en inglés) agrega todos los valores numéricos en las celdas referenciadas. Ejemplo: =SUMA(A1:A10) suma todos los valores de A1 hasta A10.' },
+  { s:'Funciones Básicas', q:'¿Qué función de Excel calcula el promedio de los valores en un rango de celdas?', o:['SUMA()','PROMEDIO()','MEDIANA()','MODA()'], c:1, f:'PROMEDIO() (o AVERAGE en inglés) calcula el promedio de los valores numéricos en las celdas de referencia. Ejemplo: =PROMEDIO(B1:B20).' },
+  { s:'Funciones Básicas', q:'¿Qué función de Excel cuenta cuántas celdas con valores numéricos hay en un rango?', o:['SUMA()','CONTARA()','CONTAR()','PROMEDIO()'], c:2, f:'CONTAR() (o COUNT en inglés) cuenta cuántas celdas contienen valores numéricos en el rango referenciado. CONTARA() cuenta celdas no vacías incluyendo texto.' },
+  { s:'Funciones Básicas', q:'¿Qué función de Excel devuelve el valor más alto de un rango de celdas?', o:['MINIMO()','PROMEDIO()','MAXIMO()','SUMA()'], c:2, f:'MAXIMO() (o MAX en inglés) devuelve el valor numérico más alto del conjunto de celdas referenciadas. Muy útil en limpieza de datos para detectar valores atípicamente altos.' },
+  { s:'Funciones Básicas', q:'¿Qué función de Excel devuelve el valor más bajo de un rango de celdas?', o:['MAXIMO()','MINIMO()','PROMEDIO()','CONTAR()'], c:1, f:'MINIMO() (o MIN en inglés) devuelve el valor numérico más bajo del conjunto de celdas referenciadas. Útil para detectar valores atípicamente bajos durante la limpieza de datos.' },
+  { s:'Funciones Básicas', q:'¿Cuál es la sintaxis correcta para sumar el rango de celdas B2 hasta B10 en Excel?', o:['=SUMA(B2,B10)','=SUMA[B2:B10]','=SUMA(B2:B10)','SUMA(B2:B10)'], c:2, f:'La sintaxis correcta es =SUMA(B2:B10). Toda fórmula comienza con = y el rango se expresa con : entre la celda inicial y la final, dentro de paréntesis.' },
+  { s:'Funciones Básicas', q:'¿Qué indica el signo = al inicio de una expresión en una celda de Excel?', o:['Que el resultado es igual a cero','Que la celda contiene una fórmula o función matemática','Que la celda está protegida','Que el valor es negativo'], c:1, f:'El signo = al inicio indica que la celda contiene una fórmula o función matemática, no un valor de texto simple. Sin el =, Excel trata el contenido como texto.' },
+  // Funciones lógicas
+  { s:'Funciones Lógicas', q:'¿Qué función lógica de Excel evalúa una condición y devuelve un valor si es verdadera y otro si es falsa?', o:['AND()','OR()','IF()','NOT()'], c:2, f:'IF() (o SI() en español) evalúa una condición y devuelve un valor si es verdadera y otro si es falsa. Ejemplo: =IF(A1>100, "Alto", "Normal").' },
+  { s:'Funciones Lógicas', q:'¿Qué función lógica permite comparar más de una condición al mismo tiempo en Excel?', o:['IF()','AND()','OR()','NOT()'], c:1, f:'AND() verifica que todas las condiciones sean verdaderas al mismo tiempo. Ejemplo: =AND(C4>50, C4<100) devuelve VERDADERO solo si C4 es mayor que 50 Y menor que 100.' },
+  // Importación de datos
+  { s:'Importación de Datos', q:'¿Qué carácter delimitador usa un archivo CSV para separar los datos en columnas?', o:['Punto y coma (;)','Dos puntos (:)','Coma (,)','Signo de dólar ($)'], c:2, f:'CSV significa valores separados por comas. La coma (,) es el delimitador estándar que separa los datos en columnas al importarlos a Excel.' },
+  { s:'Importación de Datos', q:'¿Cuál es la extensión predeterminada con la que Excel guarda los libros?', o:['.xls','.xlsx','.csv','.xlsm'], c:1, f:'Excel guarda los libros con la extensión .xlsx de manera predeterminada. Esta es la extensión estándar del formato moderno de Excel.' },
+  { s:'Importación de Datos', q:'Si la configuración regional de Windows usa separador de lista distinto de la coma, ¿qué problema puede ocurrir al importar un CSV a Excel?', o:['El archivo no se puede abrir','Excel cargará incorrectamente los datos del archivo CSV','Los datos se duplicarán','El archivo se corrompe permanentemente'], c:1, f:'Si Windows usa un separador de lista diferente a la coma, Excel cargará incorrectamente los CSV. La solución es cambiar el formato regional a Inglés (Estados Unidos) temporalmente.' },
+  // Selección y navegación
+  { s:'Selección y Navegación', q:'¿Cuál es el atajo de teclado para seleccionar toda la hoja de trabajo en Excel?', o:['Ctrl + T','Ctrl + E','Ctrl + A','Ctrl + S'], c:2, f:'Ctrl + A selecciona toda la hoja de trabajo. También se puede hacer clic en el triángulo en la esquina superior izquierda de la hoja.' },
+  { s:'Selección y Navegación', q:'¿Cómo se selecciona una columna completa en Excel?', o:['Ctrl + clic en cualquier celda de la columna','Clic en la letra del encabezado de la columna','Shift + clic en la primera y última celda','Doble clic en cualquier celda de la columna'], c:1, f:'Para seleccionar una columna completa se hace clic en la letra en la parte superior de esa columna (el encabezado). La columna queda resaltada completamente.' },
+  { s:'Selección y Navegación', q:'¿Cómo se puede redimensionar el ancho de una columna en Excel?', o:['Doble clic en cualquier celda de la columna','Clic derecho en la columna → Ancho de columna','Arrastrando la línea divisoria a la derecha del encabezado de la columna','Ctrl + W sobre la columna'], c:2, f:'Se puede cambiar el tamaño de una columna haciendo clic en la línea divisoria a la derecha del encabezado y arrastrándola hacia la izquierda o derecha.' },
+  { s:'Selección y Navegación', q:'¿Qué ocurre si se escribe directamente las coordenadas de una celda en el Cuadro de Nombre de Celda?', o:['Se crea una nueva celda con ese nombre','Esa celda se convierte en la celda activa','Se selecciona el contenido de esa celda','Se elimina el contenido de esa celda'], c:1, f:'Al escribir las coordenadas de una celda directamente en el Cuadro de Nombre de Celda, esa celda se convierte en la celda activa y el cursor navega directamente a ella.' },
+  { s:'Selección y Navegación', q:'¿Cómo se agregan múltiples filas al mismo tiempo en Excel?', o:['Insertar fila una por una','Seleccionar la cantidad de filas deseadas y luego usar Insertar Filas de Hoja','Ctrl + clic en varias filas y presionar Enter','No es posible insertar varias filas al mismo tiempo'], c:1, f:'Para agregar varias filas, se selecciona la cantidad de filas deseadas y luego se usa Insertar Filas de Hoja. La cantidad de filas agregadas es igual a las seleccionadas.' }
+];
+let cur = 0, score = 0, answered = false;
+const ss = {};
+Q.forEach(function(q) { if (!ss[q.s]) ss[q.s] = {c:0,t:0}; ss[q.s].t++; });
+function render() {
+  const q = Q[cur];
+  document.getElementById('spill').textContent = q.s;
+  document.getElementById('qtext').textContent = q.q;
+  document.getElementById('qcnt').textContent = 'Pregunta ' + (cur+1) + ' de ' + Q.length;
+  document.getElementById('slive').textContent = score + ' correcta' + (score!==1?'s':'');
+  document.getElementById('pbar').style.width = ((cur/Q.length)*100) + '%';
+  const oe = document.getElementById('opts');
+  oe.innerHTML = '';
+  q.o.forEach(function(txt, i) {
+    const btn = document.createElement('button');
+    btn.className = 'opt';
+    btn.innerHTML = '<span class="ob">' + L[i] + '</span><span>' + txt + '</span>';
+    btn.onclick = function() { sel(i); };
+    oe.appendChild(btn);
+  });
+  const fb = document.getElementById('fb');
+  fb.className = 'fb'; fb.textContent = '';
+  document.getElementById('btn').style.display = 'none';
+  answered = false;
+}
+function sel(idx) {
+  if (answered) return;
+  answered = true;
+  const q = Q[cur];
+  const btns = document.querySelectorAll('.opt');
+  btns.forEach(function(b) { b.disabled = true; });
+  const fb = document.getElementById('fb');
+  if (idx === q.c) {
+    btns[idx].classList.add('correct');
+    fb.className = 'fb fbok show';
+    fb.textContent = '✓ Correcto — ' + q.f;
+    score++; ss[q.s].c++;
+  } else {
+    btns[idx].classList.add('wrong');
+    btns[q.c].classList.add('reveal');
+    fb.className = 'fb fberr show';
+    fb.textContent = '✗ Incorrecto — ' + q.f;
+  }
+  document.getElementById('slive').textContent = score + ' correcta' + (score!==1?'s':'');
+  const btn = document.getElementById('btn');
+  btn.style.display = 'block';
+  btn.textContent = cur < Q.length-1 ? 'Siguiente →' : 'Ver resultados →';
+}
+function next() { cur++; if (cur >= Q.length) { showResult(); return; } render(); }
+function showResult() {
+  document.getElementById('qb').style.display = 'none';
+  document.querySelector('.pw').style.display = 'none';
+  const total = Q.length;
+  const pct = Math.round((score/total)*100);
+  document.getElementById('rnum').textContent = score;
+  document.getElementById('rden').textContent = 'de ' + total + ' preguntas';
+  document.getElementById('rpct').textContent = pct + '% de respuestas correctas';
+  document.getElementById('rok').textContent = score + ' correctas';
+  document.getElementById('rerr').textContent = (total-score) + ' incorrectas';
+  document.getElementById('rpctc').textContent = pct + '%';
+  const bd = document.getElementById('bdown');
+  let html = '<div class="bdtit">Resultados por sección</div>';
+  Object.keys(ss).forEach(function(sec) {
+    const d = ss[sec];
+    const sp = Math.round((d.c/d.t)*100);
+    html += '<div class="bdrow"><div class="bdn">' + sec + '</div><div class="bdm"><div class="mbg"><div class="mf" style="width:' + sp + '%"></div></div><span class="bds">' + d.c + '/' + d.t + '</span></div></div>';
+  });
+  bd.innerHTML = html;
+  let msg = '';
+  if (pct===100) msg = '¡Perfecto! Dominás completamente los conceptos básicos de Excel. ¡Listo para el siguiente nivel!';
+  else if (pct>=85) msg = '¡Excelente manejo de Excel! Revisá las secciones donde fallaste para completar el dominio.';
+  else if (pct>=70) msg = 'Buen trabajo. Prestá atención especialmente a las funciones básicas y los atajos de teclado.';
+  else if (pct>=50) msg = 'Vas bien. Repasá las funciones SUMA, PROMEDIO, CONTAR, MAXIMO y MINIMO — son fundamentales.';
+  else msg = 'Te recomendamos practicar Excel directamente y volver a intentar el quiz luego.';
+  document.getElementById('rmsg').textContent = msg;
+  document.getElementById('res').style.display = 'block';
+  drawBars('logo-bars-2');
+}
+function restart() {
+  cur = 0; score = 0; answered = false;
+  Object.keys(ss).forEach(function(k) { ss[k].c = 0; });
+  document.getElementById('res').style.display = 'none';
+  document.getElementById('qb').style.display = 'block';
+  document.querySelector('.pw').style.display = 'block';
+  render();
+}
+render();
+</script>
+</body>
+</html>
